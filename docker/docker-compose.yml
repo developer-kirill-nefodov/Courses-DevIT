@@ -44,7 +44,7 @@ services:
         - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
         - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
     volumes:
-      - /home/kiril/docker/testWords/docker/mongodb/database:/data/db
+      - /home/kiril/homework/kirill-nefodov/docker/mongodb/database:/data/db
     ports:
      - "6000:6000"
     restart: unless-stopped
@@ -76,7 +76,7 @@ services:
        - MYSQL_USER=$MYSQL_USER
        - MYSQL_PASSWORD=$MYSQL_PASSWORD
     volumes:
-      - /home/kiril/docker/testWork/docker/mysql/database:/data/db
+      - /home/kiril/homework/kirill-nefodov/docker/mysql/database:/data/db
     ports:
       - "6002:6002"
     restart: unless-stopped
