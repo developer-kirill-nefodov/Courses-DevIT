@@ -2,6 +2,7 @@ class Figure {
     constructor(options) {
         this.model = options.model;
     }
+
 }
 
 class Square extends Figure {
@@ -10,23 +11,24 @@ class Square extends Figure {
         this.sideA = options.sideA
         this.sideB = options.sideB
     }
+
+    area() {
+        console.log(`area: ${this.sideA * this.sideB}`)
+    }
+
+    perimeter() {
+        console.log(`perimeter: ${(this.sideA + this.sideB) * 2}`)
+    }
+
+    toJSON() {
+        console.group()
+        console.log(`model: ${this.model}`)
+        this.area()
+        this.perimeter()
+        console.groupEnd()
+    }
 }
 
-Square.prototype.area = function () {
-    console.log(`area: ${this.sideA * this.sideB}`)
-}
-
-Square.prototype.perimeter = function () {
-    console.log(`perimeter: ${(this.sideA + this.sideB) * 2}`)
-}
-
-Square.prototype.toJSON = function () {
-    console.group()
-    console.log(`model: ${this.model}`)
-    this.area()
-    this.perimeter()
-    console.groupEnd()
-}
 
 const square1 = new Square({model: 'square', sideA: 10, sideB: 10})
 const square2 = new Square({model: 'rectangle', sideA: 10, sideB: 20})

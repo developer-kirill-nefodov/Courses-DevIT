@@ -12,3 +12,7 @@ Services
 
 /**/   /**/
 docker rm -f $(docker ps -aq)
+
+//Dockerfile - используется для сборки обр
+
+//docker-compose.yml
