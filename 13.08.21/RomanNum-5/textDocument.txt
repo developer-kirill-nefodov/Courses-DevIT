@@ -1,0 +1,7 @@
+5. Написать метод который переводит целое число к Римскому и обратный метод Римское к целому.
+Синтаксис: 
+romanToInt(str: string): number;
+intToRoman(int: number): string;
+Пример: 
+console.log(romanToInt('XXVI')); // 26
+console.log(intToRoman(26)); // 'XXVI'

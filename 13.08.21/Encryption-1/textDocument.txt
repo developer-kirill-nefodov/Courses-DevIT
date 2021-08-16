@@ -1,0 +1,3 @@
+1. Написать метод защиты email (например для не залогиненых пользователей)
+Синтаксис: protect_email(email: string, replacer: string = '*' ): string
+Пример: console.log(protect_email("robin_singh@example.com")); // r***@***e.com

@@ -1,0 +1,11 @@
+3. Написать метод text_truncate который обрезает текст до указаного значения(по
+ умолчанию 100) и в конец добавляет символы (по умолчанию ...)
+Синтаксис: text_truncate(str: string, length: number = 100, ending: string = '...'): string
+Пример: 
+console.log(text_truncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'))
+console.log(text_truncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit.',19))
+console.log(text_truncate('Lorem ipsum dolor sit amet, consectetur adipiscing elit.',15,'!!'))
+
+//Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+//Lorem ipsum dolo...
+//Lorem ipsum d!!
