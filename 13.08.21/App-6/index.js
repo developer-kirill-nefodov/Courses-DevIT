@@ -2,6 +2,7 @@ let iCh = 0, iSu = 0;
 
 class Company {
     constructor() {
+        this.company = {}
         this.boss = {};
         this.chiefs = {};
         this.subordinates = {};
@@ -44,84 +45,113 @@ class Company {
 
     update(id, data) {
 
-        if (this.boss.id === id) {
-            this.boss = Object.assign(this.boss, data, {subordinates: this.chiefs});
-            return
-        }
-
-        for (let x = 0; x < iCh + iSu; x++) {
-
-            if (this.chiefs['idx' + x].id === id) {
-                this.chiefs['idx' + x] = Object.assign(this.chiefs['idx' + x], data, {
-                    subordinates: this.subordinates, chief: this.boss
-                })
-                return
-            }
-            if (this.subordinates['idx' + x].id === id) {
-                this.subordinates['idx' + x] = Object.assign(this.subordinates['idx' + x], data, {
-                    chief: this.chiefs
-                })
-                return
+        for (let key in this.boss) {
+            if (this.boss[key] === id) {
+                this.boss = Object.assign(this.boss, data, {subordinates: {}});
+                return;
             }
         }
+
+
+        for (let key in this.chiefs) {
+            if (this.chiefs[key].id === id) {
+                this.chiefs[key] = Object.assign(this.chiefs[key], data);
+                return;
+            }
+        }
+
+        for (let key in this.subordinates) {
+            if (this.subordinates[key].id === id) {
+                this.subordinates[key] = Object.assign(this.subordinates[key], data);
+                return;
+            }
+        }
+
+        this.onChange()
     }
 
     delete(id) {
-        const idxB = this.boss.id === id
 
-        if (idxB > 0) {
+        if (this.boss.id === id) {
             this.boss = {place: 'unoccupied'};
             return
         }
 
-        for (let y = 0; y < iCh + iSu; y++) {
-            const idxC = this.chiefs['idx' + y].id === id
-            const idxS = this.chiefs['idx' + y].id === id
-
-            if (idxC > 0) {
-                delete this.chiefs['idx' + y]
-                return
-            }
-
-            if (idxS > 0) {
-                delete this.subordinates['idx' + y]
-                return
+        for (let key in this.chiefs) {
+            if (this.chiefs[key].id === id) {
+                delete this.chiefs[key];
+                return;
             }
         }
+
+        for (let key in this.subordinates) {
+            if (this.chiefs[key].id === id) {
+                delete this.subordinates[key];
+                return;
+            }
+        }
+
+        this.onChange()
     }
 
 
+    onChange() {
+        let a = {...this.boss},
+            b = {...this.chiefs},
+            c = {...this.subordinates};
+
+        if (a.name === undefined) {
+            for (let key in b) {
+                a = Object.assign(b[key], {position: 'boss'});
+                console.log(a)
+                delete b[key];
+                if (a.name !== undefined) break;
+            }
+
+        }
+
+
+        for (let key in b) {
+            b[key] = Object.assign(b[key], {chiefs: {}, subordinates: {}})
+        }
+
+        for (let key in c) {
+            c[key] = Object.assign(c[key], {chiefs: {}, subordinates: null})
+        }
+
+        this.company = {
+            boss: {a},
+            chiefs: {b},
+            subordinates: {c}
+        }
+
+    }
+
     getChief(method, value) {
-
-        for (let x = 0; x < iCh; x++) {
-            const idxC = this.chiefs['idx' + x][method] === value
-
-            if (idxC) {
-                return this.chiefs['idx' + x]
+        for (let key in this.chiefs) {
+            if (this.chiefs[key][method] === value) {
+                return this.chiefs[key]
             }
         }
+
         return 'person not found'
     }
 
     getChiefAll() {
-        console.log("getChiefAll")
         return this.chiefs
     }
 
 
     getSubordinated(method, value) {
-        for (let x = 0; x < iCh; x++) {
-            const idxS = this.subordinates['idx' + x][method] === value
-
-            if (idxS) {
-                return this.subordinates['idx' + x]
+        for (let key in this.subordinates) {
+            if (this.subordinates[key][method] === value) {
+                return this.subordinates[key]
             }
         }
         return 'person not found'
     }
 
     getSubordinatedAll() {
-        console.log("getSubordinateAll")
         return this.subordinates
     }
 
@@ -131,28 +161,23 @@ class Company {
 
         money += this.boss.bid
         am++
-        for (let z = 0; z < iCh; z++) {
-            if(this.chiefs['idx' + z].bid > 0) {
-                console.log(this.chiefs['idx' + z].bid)
-                money += this.chiefs['idx' + z].bid;
-                am++
-            }
-        }
-        for (let z = 0; z < iSu; z++) {
-            if (this.subordinates['idx' + z].bid > 0){
-                money += this.subordinates['idx' + z].bid;
-                am++
-            }
+
+        for (let key in this.chiefs) {
+            money += this.chiefs[key].bid;
+            am++;
         }
 
-        return money/am
+        for (let key in this.subordinates) {
+            money += this.subordinates[key].bid;
+            am++;
+        }
+
+        return money / am
     }
 
-    // toJSON() {
-    //     const a = Object.assign({}, this.boss, this.chiefs, this.subordinates)
-    //     console.log(a)
-    //     return JSON.stringify(a);
-    // }
+    toJSON() {
+        return JSON.stringify(this.company);
+    }
 
 }
 
@@ -171,6 +196,8 @@ class Person {
 
 }
 
+
+const company = new Company()
 
 const bigBoss = new Person({
     name: 'Kirill',
@@ -193,34 +220,86 @@ const chiefs1 = new Person({
     position: 'chief',
     id: 2
 })
+const chiefs2 = new Person({
+    name: 'Vlad',
+    surname: 'Xxx',
+    age: 25,
+    telephone: '+380963703263',
+    email: 'Bob@gmail.com',
+    bid: 90000,
+    position: 'chief',
+    id: 3
+})
+const chiefs3 = new Person({
+    name: 'personX',
+    surname: 'Xxx',
+    age: 25,
+    telephone: '+380963703263',
+    email: 'Bob@gmail.com',
+    bid: 90000,
+    position: 'chief',
+    id: 4
+})
 
 const subordinates1 = new Person({
-    name: 'Maxim',
+    name: 'Maxim1',
     surname: 'Xxx',
     age: 90,
     telephone: '+380963703262',
     email: 'maxim@gmail.com',
     bid: 20000,
     position: 'subordinate',
-    id: 3
+    id: 5
 })
 
-Company.prototype.create(bigBoss)
-Company.prototype.create(chiefs1)
-Company.prototype.create(subordinates1)
+const subordinates2 = new Person({
+    name: 'Maxim2',
+    surname: 'Xxx',
+    age: 90,
+    telephone: '+380963703262',
+    email: 'maxim@gmail.com',
+    bid: 20000,
+    position: 'subordinate',
+    id: 6
+})
 
-Company.prototype.update(1, {bid: 99e9})
-Company.prototype.update(2, {name: 'Vasya'})
-Company.prototype.update(3, {age: 91})
+const subordinates3 = new Person({
+    name: 'Maxim3',
+    surname: 'Xxx',
+    age: 90,
+    telephone: '+380963703262',
+    email: 'maxim@gmail.com',
+    bid: 20000,
+    position: 'subordinate',
+    id: 7
+})
 
-// Company.prototype.delete(3)
+company.create(bigBoss)
+company.create(chiefs1)
+company.create(chiefs2)
+company.create(chiefs3)
+company.create(subordinates1)
+company.create(subordinates2)
+company.create(subordinates3)
 
-console.log(Company.prototype.getChief('name', 'Kirill'))
-console.log(Company.prototype.getChief('age', 91))
-console.log(Company.prototype.getChief('telephone', '+380963703263'))
 
-console.log(Company.prototype.getChiefAll())
-console.log(Company.prototype.getSubordinatedAll())
+company.onChange()
 
 
-console.log(Company.prototype.toJSON())
+company.update(1, {bid: 99e9})
+company.update(2, {name: 'Vasya'})
+company.update(3, {age: 91})
+
+console.log(company.company)
+
+
+// console.log(company.getChief('name', 'Kirill'))
+// console.log(company.getChief('age', 91))
+// console.log(company.getChief('telephone', '+380963703263'))
+
+// console.log(company.getChiefAll())
+// console.log(company.getSubordinatedAll())
+
+
+// console.log(company.toJSON())
+// company.delete(3)
