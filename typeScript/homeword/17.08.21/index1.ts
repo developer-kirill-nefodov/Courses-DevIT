@@ -1,9 +1,9 @@
 function protect_email(email: string, r: string = '*'): string{
-    let a = email.charAt(0),
-        b = String(r + r + r),
-        c = email.indexOf("@"),
-        d = email.indexOf("."),
-        e = email.slice(d - 1);
+    let a: string = email.charAt(0),
+        b: string = (r + r + r),
+        c: number = email.indexOf("@"),
+        d: number = email.indexOf("."),
+        e: string = email.slice(d - 1);
 
     return `${a + b}${email.charAt(c)}${b + e}`;
 }

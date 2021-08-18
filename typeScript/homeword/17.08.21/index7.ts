@@ -21,22 +21,22 @@ function permute(input: string): Array<number> {
     let lastEl: string | number = arr[arr.length - 1];
 
     if (firstEl === '^') {
-        newArr[0] = Number(arr[1]);
+        newArr[0] = +(arr[1]);
         arr.splice(0, 2);
         arr.join('').split('');
     }
 
     if (lastEl === '$') {
-        newArr[1] = Number(arr[arr.length - 2]);
+        newArr[1] = +(arr[arr.length - 2]);
         arr.splice(arr.length - 2);
         arr.join('').split('');
     }
 
     for (let i = 0; i < arr.length; i++) {
-        let ch: number = Number(arr.splice(i, 1)[0]);
+        let ch: number = +(arr.splice(i, 1)[0]);
         usedChars.push(ch);
         if (arr.length === 0) {
-            permArr.push(Number([newArr[0], ...usedChars, newArr[1]].join('')));
+            permArr.push(+([newArr[0], ...usedChars, newArr[1]].join('')));
         }
         permute(arr.join(''));
         arr.splice(i, 0, ch);

@@ -1,4 +1,7 @@
-const arr: Array<[number, string]> = [
+type roman = 'I' | 'IV' | 'V' | 'IX' | 'X' | 'XL' |
+    'L' | 'XC' | 'C' | 'CD' | 'D' | 'CM' | 'M'
+
+const arr: Array<[number, roman]> = [
     [1000, 'M'], [900, 'CM'], [500, 'D'],
     [400, 'CD'], [100, 'C'], [90, 'XC'],
     [50, 'L'], [40, 'XL'], [10, 'X'],
@@ -9,6 +12,7 @@ function intToRoman(int: number): string {
     if (int === 0) {
         return '';
     }
+
     for (let i = 0; i < arr.length; i++) {
         if (int >= arr[i][0]) {
             return arr[i][1] + intToRoman(int - arr[i][0]);
@@ -16,4 +20,4 @@ function intToRoman(int: number): string {
     }
 }
 
-// console.log(intToRoman(55)) //LV
+console.log(intToRoman(55)) //LV

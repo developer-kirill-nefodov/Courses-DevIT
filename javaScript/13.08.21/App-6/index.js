@@ -111,14 +111,13 @@ class Company {
 
         for (let key in b) {
             let sub = {}, x = 0;
-            for (let keyC in c) {
-                if (keyC === undefined) {
-                    break;
-                } else {
 
-                    if (2 === x) continue;
+            for (let keyC in c) {
+                if (keyC === undefined) break;
+                 else {
+                    // if (2 === x) continue;
                     sub[keyC] = c[keyC].name;
-                        x++;
+                    x++;
                 }
             }
             b[key] = Object.assign(b[key], {chiefs: a.name, subordinates: sub})
