@@ -5,7 +5,6 @@ function protect_email(email: string, r: string = '*'): string{
         d = email.indexOf("."),
         e = email.slice(d - 1);
 
-
     return `${a + b}${email.charAt(c)}${b + e}`;
 }
 

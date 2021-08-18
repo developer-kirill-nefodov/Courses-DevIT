@@ -102,29 +102,44 @@ class Company {
 
         if (a.name === undefined) {
             for (let key in b) {
-                a = Object.assign(b[key], {position: 'boss'});
-                console.log(a)
+                a = Object.assign(b[key], {position: 'boss', subordinates: null});
                 delete b[key];
                 if (a.name !== undefined) break;
             }
-
         }
 
 
         for (let key in b) {
-            b[key] = Object.assign(b[key], {chiefs: {}, subordinates: {}})
+            let sub = {}, x = 0;
+            for (let keyC in c) {
+                if (keyC === undefined) {
+                    break;
+                } else {
+
+                    if (2 === x) continue;
+                    sub[keyC] = c[keyC].name;
+                        x++;
+                }
+            }
+            b[key] = Object.assign(b[key], {chiefs: a.name, subordinates: sub})
         }
 
+
         for (let key in c) {
-            c[key] = Object.assign(c[key], {chiefs: {}, subordinates: null})
+            c[key] = Object.assign(c[key], {chiefs: a.name, subordinates: null})
         }
 
         this.company = {
-            boss: {a},
-            chiefs: {b},
-            subordinates: {c}
+            boss: {
+                ...a,
+                subordinatesBoss: {
+                    ...b,
+                    subordinatesChiefs: {
+                        ...c
+                    }
+                }
+            }
         }
-
     }
 
     getChief(method, value) {
@@ -274,23 +289,23 @@ const subordinates3 = new Person({
     id: 7
 })
 
-company.create(bigBoss)
-company.create(chiefs1)
-company.create(chiefs2)
-company.create(chiefs3)
-company.create(subordinates1)
-company.create(subordinates2)
-company.create(subordinates3)
-
-
-company.onChange()
-
-
-company.update(1, {bid: 99e9})
-company.update(2, {name: 'Vasya'})
-company.update(3, {age: 91})
-
-console.log(company.company)
+// company.create(bigBoss)
+// company.create(chiefs1)
+// company.create(chiefs2)
+// company.create(chiefs3)
+// company.create(subordinates1)
+// company.create(subordinates2)
+// company.create(subordinates3)
+//
+//
+// company.onChange()
+//
+//
+// company.update(1, {bid: 99e9})
+// company.update(2, {name: 'Vasya'})
+// company.update(3, {age: 91})
+//
+// console.log(company.company)
 
 
 // console.log(company.getChief('name', 'Kirill'))

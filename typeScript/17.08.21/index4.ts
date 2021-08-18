@@ -1,7 +1,7 @@
 function chunk_str(str: string, size: number = 1, trim: boolean = true): any {
     let a = str.split(' ').join('')
     let arr: Array<string> = []
-    console.log(str.substr(4, 7))
+
     while (a) {
         if (a.length < arr.length) {
             arr.push(a);
@@ -15,4 +15,4 @@ function chunk_str(str: string, size: number = 1, trim: boolean = true): any {
     return arr
 }
 
-// console.log(chunk_str('con sectetur', 3)) //['con', 'sec', 'tet', 'ur']
+console.log(chunk_str('con sec tet ur', 3)) //['con', 'sec', 'tet', 'ur']
