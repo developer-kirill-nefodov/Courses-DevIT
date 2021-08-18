@@ -1,0 +1,382 @@
+typescript ооп
+
+/***************************************************************/
+
+                           Классы
+
+/***************************************************************/
+               Поля для чтения
+Полям класса в процессе работы программы можно присваивать различные значения,
+ которые соответствуют типу полей. Однако TypeScript также позволяет определять поля для чтения,
+ значения которых нельзя изменить(кроме как в конструкторе).
+ Для определения таких полей применяется ключевое слово readonly:
+
+class User {
+
+    readonly name: string = "Default user";
+    age: number;
+    constructor(userName: string, userAge: number) {
+
+        this.name = userName;
+        this.age = userAge;
+    }
+    print(){
+        console.log(`name: ${this.name}  age: ${this.age}`);
+    }
+}
+
+Значение полей для чтения можно установить либо при объявлении:
+
+class User {
+readonly name: string = "user";
+}
+
+Либо в конструкторе:
+
+class User {
+readonly name: string = "user";
+
+constructor(userName: string) {
+    this.name = userName;
+ }
+}
+
+В остальных местах программы значение этого поля нельзя изменить. Например, в следующем случае мы получим
+при компиляции ошибку, потому что пытаемся установить поле для чтения:
+
+let tom = new User("Tom");
+tom.name = "Bob";       // ! Ошибка - поле name - только для чтения
+
+/***************************************************************/
+
+Наследование
+Одним из ключевых моментов объектно-ориентированной парадигмы является наследование.
+В TypeScript наследование реализуется с помощью ключевого слова extends
+
+class Person {
+
+    name: string;
+    constructor(userName: string) {
+
+        this.name = userName;
+    }
+    print(): void {
+        console.log(`Имя: ${this.name}`);
+    }
+}
+
+class Employee extends Person {
+
+    company: string;
+    work(): void {
+        console.log(`${this.name} работает в компании ${this.company}`);
+    }
+}
+
+При наследовании класс Employee перенимает весь функционал класса Person - все его
+свойства и функции и может их использовать. И также можно определить в подклассе
+ новые свойства и методы, которых нет в классе Person.
+
+/***************************************************************/
+Модификаторы доступа
+
+Модификаторы доступа позволяют сокрыть состояние объекта от внешнего
+доступа и управлять доступом к этому состоянию. В TypeScript три
+модификатора: public, protected и private.
+
+
+Если к свойствам и функциям классов не применяется модификатор,
+то такие свойства и функции расцениваются как будто они определены
+с модификатором public. То есть следующее определение класса:
+
+class Person {
+     name: string;
+     year: number;
+ }
+
+ Будет эквивалентно:
+
+ class Person {
+     public name: string;
+     public year: number;
+ }
+
+
+ Если же к свойствам и методам применяется модификатор private,
+  то к ним нельзя будет обратиться извне при создании объекта
+  данного класса.
+
+   class Person {
+       private _name: string;
+
+       constructor(name: string) {
+           this._name = name;
+       }
+
+       private setYear(age: number): number {
+           return new Date().getFullYear() - age;
+       }
+   }
+
+   const tom = new Person("Tom", 24);
+
+   // console.log(tom._name); // нельзя обратиться, так как _name - private
+
+
+
+    Модификатор protected определяет поля и методы, которые из вне класса видны только в классах-наследниках:
+
+    class Person {
+        protected name: string;
+        constructor(name: string) {
+            this.name = name;
+        }
+
+        protected printPerson(): void {
+
+            console.log(`Имя: ${this.name}`);
+        }
+    }
+
+    class Employee extends Person {
+
+        constructor(name: string) {
+            super(name);
+        }
+        public printEmployee(): void {
+            this.printPerson();                     // метод printPerson доступен, так как protected
+            console.log(`Компания: ${this.company}`);
+        }
+    }
+
+    let sam = new Employee("Sam", 31, "Microsoft");
+    sam.printEmployee();
+/***************************************************************/
+
+                           Интерфейсы
+
+/***************************************************************/
+
+
+/***************************************************************/
+
+Интерфейсы объектов
+
+
+Интерфейс определяет свойства и методы, которые объект должен реализовать.
+
+interface IUser {
+    id: number;
+    name: string;
+}
+
+let employee: IUser = {
+    id: 1,
+    name: "Tom"
+}
+
+Если правильнее говорить, то employee реализует интерфейс IUser.
+Причем эта реализация накладывает на employee некоторые ограничения.
+Так, employee должен реализовать все свойства и методы интерфейса IUser,
+поэтому при определении employee данный объект обязательно должен включать
+в себя свойства id и name.
+
+Параметры методов и функций также могут представлять интерфейсы:
+
+
+interface IUser {
+    id: number;
+    name: string;
+}
+let employee: IUser = {
+    id: 1,
+    name: "Alice"
+}
+
+function printUser(user: IUser): void {
+
+    console.log("id: ", user.id);
+    console.log("name: ",  user.name)
+}
+
+printUser(employee);
+
+В этом случае аргумент, который передается в функцию, должен представлять
+объект или класс, который реализует соответствующий интерфейс.
+
+interface IUser {
+    id: number;
+    name: string;
+}
+function buildUser(userId: number, userName: string): IUser {
+
+    return { id: userId, name: userName };
+}
+
+let newUser = buildUser(2, "Bill");
+
+
+При определении интерфейса мы можем задать некоторые свойства как необязательные
+с помощью знака вопроса. Подобные свойства реализовать необязательно:
+
+interface IUser {
+    id: number;
+    name: string;
+    age?: number;
+}
+
+let employee: IUser = {
+    id: 1,
+    name: "Alice",
+    age: 23
+}
+let manager: IUser = {
+    id: 2,
+    name: "Tom"
+}
+
+
+Также интерфейс может содержать свойства только для чтения, значение которых нельзя
+ изменять. Такие свойства определяются с помощью ключевого слова readonly:
+
+interface Point {
+    readonly x: number;
+    readonly y: number;
+}
+
+let p: Point = { x: 10, y: 20 };
+console.log(p);
+
+// p.x = 5; // Ошибка - свойство доступно только для чтения
+
+
+Определение методов
+Кроме свойств интерфейсы могут определять функции:
+
+
+interface IUser {
+    id: number;
+    name: string;
+    sayWords(words: string): void;
+}
+
+let employee: IUser = {
+    id: 1,
+    name: "Alice",
+    sayWords: function(words: string): void{
+        console.log(`${name} говорит "${words}"`);
+    }
+}
+
+employee.sayWords("Привет, как дела?");
+
+Опять же объект, который реализует интерфейс,
+ также обязан реализовать определенную в интерфейсе
+ функцию с тем же набором параметров и тем типом
+ выходного результата.
+
+
+
+           Интерфейсы классов
+Интерфейсы могут быть реализованы не только объектами, но и классами.
+ Для этого используется ключевое слово implements:
+
+interface IUser {
+    id: number;
+    name: string;
+    getFullName(surname: string): string;
+}
+
+class User implements IUser{
+
+    id: number;
+    name: string;
+    age: number;
+    constructor(userId: number, userName: string, userAge: number) {
+
+        this.id = userId;
+        this.name = userName;
+        this.age = userAge;
+    }
+    getFullName(surname: string): string {
+
+        return this.name + " " + surname;
+    }
+}
+
+let tom = new User(1, "Tom", 23);
+console.log(tom.getFullName("Simpson"));
+
+Класс User реализует интерфейс IUser. В этом случае класс User обязан
+ определить все те же свойства и функции, которые есть в IUser.
+
+При этом объект tom является как объектом User, так и объектом IUser:
+
+let tom :IUser = new User(1, "Tom", 23);
+//или
+let tom :User = new User(1, "Tom", 23);
+
+
+
+Расширение интерфейса
+TypeScript позволяет добавлять в интерфейс новые поля и методы, просто объявив
+ интерфейс с тем же именем и определив в нем необходимые поля и методы. Например:
+
+
+interface IUser {
+    id: number;
+    name: string;
+}
+interface IUser{
+    age: number;
+}
+let employee: IUser = {
+
+    id: 1,
+    name: "Alice",
+    age: 31
+}
+
+function printUser(user: IUser): void {
+
+    console.log(`id: ${user.id}  name: ${user.name}  age: ${user.age}`);
+}
+
+printUser(employee);
+В данном случае первое определение интерфейса IUser содержит поля id и name.
+Второе определение интерфейса содержит объявление поля age. В итоге объект или
+класс, который реализует этот интерфейс, должен определить все три поля - id, name и age.
+
+
+Наследование интерфейсов
+Интерфейсы, как и классы, могут наследоваться:
+
+
+interface IMovable {
+
+    speed: number;
+    move(): void;
+}
+interface ICar extends IMovable {
+
+    fill(): void;
+}
+class Car implements ICar {
+
+    speed: number;
+    move(): void {
+
+        console.log("Машина едет со скоростью " + this.speed + " км/ч");
+    }
+
+    fill(): void {
+
+        console.log("Заправляем машину топливом");
+    }
+}
+
+let auto = new Car();
+auto.speed = 60;
+auto.fill();
+auto.move();
+

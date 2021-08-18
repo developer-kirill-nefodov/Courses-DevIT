@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "outDir": "test",
+    "outFile": "index.js",
+    "noImplicitAny": true
+  }
+}
