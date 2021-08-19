@@ -1,4 +1,4 @@
-function chunk_str(str: string, size: number = 1, trim: boolean = true): any {
+function chunk_str(str: string, size: number = 1): any {
     let a = str.split(' ').join('')
     let arr: Array<string> = []
 
@@ -12,7 +12,7 @@ function chunk_str(str: string, size: number = 1, trim: boolean = true): any {
             a = a.substr(size);
         }
     }
-    return arr
+    return arr;
 }
 
 console.log(chunk_str('con sec tet ur', 3)) //['con', 'sec', 'tet', 'ur']
