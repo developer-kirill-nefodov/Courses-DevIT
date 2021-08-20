@@ -1,7 +1,7 @@
 class Static {
-    public static user: string = 'Bob';
+    static user: string = 'Bob';
 
-    public static getUser(): string {
+    static getUser(): string {
         return this.user
     }
 }

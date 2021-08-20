@@ -1,4 +1,4 @@
-class Many {
+class Demo {
     private age: number = 20;
 
     getAge(): number {
@@ -6,19 +6,20 @@ class Many {
     }
 }
 
-class Many1 {
+class Demo1 {
     private age: number = 40;
 
-    getAge(age: number): void {
+    upAge(age: number): void {
         this.age = age
+    }
+
+    getAge(): number{
+        return this.age
     }
 }
 
-const car1 = new Many()
-const car2 = new Many1()
+const demo = new Demo()
+const demo1 = new Demo1()
 
-car2.getAge(car1.getAge())
-console.log(car1.getAge())
-
-
-
+demo1.upAge(demo.getAge())
+console.log(demo1.getAge())

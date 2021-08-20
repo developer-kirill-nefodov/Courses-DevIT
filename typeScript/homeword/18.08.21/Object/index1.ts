@@ -1,4 +1,4 @@
-function obj_dbArr(obj) {
+function obj_dbArr(obj: object): object{
     return Object.entries(obj)
 }
 

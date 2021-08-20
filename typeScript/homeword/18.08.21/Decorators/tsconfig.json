@@ -1,15 +1,12 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-
     "target": "es2020",
     "outDir": "./build",
     "watch": true,
     "pretty": true
   },
   "files": [
-    "index1.ts",
-    "index2.ts",
-    "index3.ts"
+    "index.ts"
   ]
 }

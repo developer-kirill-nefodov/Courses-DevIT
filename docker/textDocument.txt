@@ -5,7 +5,7 @@ Services
 3. Mysql
 4. phpmyadmin
 5. nginx(в который пробрасываеться index.html твой)
-6. node (запуск index.js после поднятия контейнера с console.log('hello'))
+6. node (запуск index.html после поднятия контейнера с console.log('hello'))
 
 + Makefile с командами для быстрого запуска проекта и доступа к tty
 
