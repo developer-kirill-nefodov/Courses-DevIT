@@ -1,4 +1,4 @@
-function arrToObj(arr: object): object{
+function arrToObj(arr: Array<object>): object{
     let newArr = {}
     arr.map((n) => Object.assign(newArr, n));
 

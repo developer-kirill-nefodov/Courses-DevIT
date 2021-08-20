@@ -1,8 +1,5 @@
-let n = 0;
-
-function fib() {
+function fib(n) {
     let a = 1, b = 1, sum;
-    n++;
 
     for (let i = 3; i <= n; i++) {
         sum = a + b;
@@ -13,8 +10,11 @@ function fib() {
 }
 
 function* generatorFib() {
+    let n = 1;
+
     while (true) {
-        yield fib();
+        yield fib(n);
+        n++
     }
 }
 
