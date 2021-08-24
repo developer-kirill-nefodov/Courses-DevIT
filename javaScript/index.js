@@ -1,22 +1,25 @@
-// function A () {
-//     let type = null;
-//     let x = null;
-//     Object.defineProperty(this, 'x', {
-//         get: function () {
-//             return x;
-//         },
-//         set: function (value) {
-//             if (type === null) type = typeof value;
-//             if (typeof value === type) {
-//                 x = value;
-//             }
-//         },
-//         enumerable: true
-//     })
-// }
+/**
+ function a() {
+    let type = null;
+    let x = null;
+    Object.defineProperty(this, 'x', {
+        get: function () {
+            return x;
+        },
+        set: function (value) {
+            if (type === null) type = typeof value;
+            if (typeof value === type) {
+                x = value;
+            }
+        },
+        enumerable: true
+    })
+}
+ */
+
 
 /**
-function Single(){
+ function Single(){
     let ins = null;
     return (function (){
         if(!ins){
@@ -26,16 +29,16 @@ function Single(){
     })();
 }
 
-const a = new Single();
-const b = new Single();
+ const a = new Single();
+ const b = new Single();
 
-a.x = 10;
-console.log(b.x)
-console.log(a.x)
-*/
+ a.x = 10;
+ console.log(b.x)
+ console.log(a.x)
+ */
 
 /**
-function a() {
+ function a() {
     const cnt = {
         ctxB: { name: 'b'},
         ctxC: { name: 'c'}
@@ -48,28 +51,11 @@ function a() {
         }.bind(this)
     }.bind(cnt)
 }
-a()()();
-*/
-
-
-// function a(sep, ...other) {
-//     const next = (other) => {
-//         return x => {
-//             if (!x) {
-//                 return other.reduce((acc, a) => {
-//                     return sep.call(sep, acc, a)
-//                 }, 0);
-//             }
-//             return next(other, x);
-//         };
-//     };
-//     return next();
-//     // return ``
-// }
-
+ a()()();
+ */
 
 /**
-function a (sep, ...other){
+ function a (sep, ...other){
     const c = (...arg) => {
         other.push(...arg)
         if(!arg.length){
@@ -80,13 +66,13 @@ function a (sep, ...other){
     return c;
 }
 
-console.log(a("+")("a", "b", "c")())
-console.log(a("+", "0")("1")("2")("3")("4","5")())
-let carryMin = {}
-*/
+ console.log(a("+")("a", "b", "c")())
+ console.log(a("+", "0")("1")("2")("3")("4","5")())
+ let carryMin = {}
+ */
 
 /**
-function a (fn){
+ function a (fn){
     if(typeof fn !== "function"){
         throw new Error('Not a function')
     }
@@ -108,14 +94,52 @@ function a (fn){
  let carr = a(123)
 
  console.log(carr(Math.min))
-*/
+ */
+const dbArr = [
+    [1, 0], [0, 0], ['Error', 7],
+    [Function, 'XXX'],
+    [3, 5], [0, 0], ['End', 99.9]
+]
 
-function A() {
+// const demoMatrix = Math.matrix([[7, 1], [-3, 2]])
 
+function A(matrix) {
+    this.find = (a) => {
+        console.log(matrix[a])
+    }
+
+    this.get = (arr) => {
+        console.log(matrix[arr[0]][arr[1]])
+    }
+
+    this.zip = () => {
+        const newMatrix = [];
+        for (let key of matrix) {
+            newMatrix.push([...key, matrix.indexOf(key)])
+        }
+        console.log(newMatrix)
+    }
+
+    this.unzip = (arr) => {
+        const newMatrix = [];
+        for (let key of arr) {
+            let idx = key[key.length - 1];
+            newMatrix[idx] = key.splice(0, key.length - 1)
+        }
+        console.log(newMatrix)
+    }
 }
 
-let matrix = A()
+let matrix = new A(dbArr)
 
-matrix.find(1) //[0, 0]
-matrix.get([0, 0]) //1
-// matrix.zip()//[[0,0,1],[...]]
+matrix.find(1);//[0, 0]
+matrix.get([0, 0])//1
+matrix.zip()//[[1, 0, 0],[...]]
+
+matrix.unzip(
+    [[1, 0, 0], [0, 0, 1], ['Error', 7, 2],
+        [Function, 'XXX', 3], [3, 5, 4], [0, 0, 5],
+        ['End', 99.9, 6]]
+) //matrix
+
+
