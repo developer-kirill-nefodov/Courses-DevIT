@@ -27,13 +27,3 @@ class Drinks {
 const drink1 = new Drinks('Water', 0, 0);
 const drink2 = new Drinks('Sprite',20,  39);
 const drink3 = new Drinks('Coca-Cola', 20, 38);
-
-
-export {
-    food1,
-    food2,
-    food3,
-    drink1,
-    drink2,
-    drink3
-}

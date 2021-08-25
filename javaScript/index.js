@@ -132,14 +132,12 @@ function A(matrix) {
 
 let matrix = new A(dbArr)
 
-matrix.find(1);//[0, 0]
-matrix.get([0, 0])//1
-matrix.zip()//[[1, 0, 0],[...]]
-
-matrix.unzip(
-    [[1, 0, 0], [0, 0, 1], ['Error', 7, 2],
-        [Function, 'XXX', 3], [3, 5, 4], [0, 0, 5],
-        ['End', 99.9, 6]]
-) //matrix
-
-
+// matrix.find(1);//[0, 0]
+// matrix.get([0, 0])//1
+// matrix.zip()//[[1, 0, 0],[...]]
+//
+// matrix.unzip(
+//     [[1, 0, 0], [0, 0, 1], ['Error', 7, 2],
+//         [Function, 'XXX', 3], [3, 5, 4], [0, 0, 5],
+//         ['End', 99.9, 6]]
+// ) //matrix

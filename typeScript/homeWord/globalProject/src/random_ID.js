@@ -1,4 +1,4 @@
-export default function Random_ID() {
+function Random_ID() {
     let id = String.fromCharCode(Math.floor((Math.random() * 25) + 65));
 
     do {
