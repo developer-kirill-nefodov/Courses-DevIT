@@ -27,7 +27,7 @@ a = a + b;
 function f() {
     let a = 8;
     let c = a + b;
-    a = a + d;
+    // a = a + d;
     console.log(a + c)
 }
 
