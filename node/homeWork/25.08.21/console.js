@@ -1,47 +1,136 @@
-/** Пример использования глобального console: */
-const { Console } = require('console');
-const fs = require("fs");
+/** Пример использования console: */
+
 /** 1 */
-console.log('hello world');
-// Prints: hello world, to stdout
-console.log('hello %s', 'world');
-// Prints: hello world, to stdout
+
+// const obj = {
+//     name: 'Andrey',
+//     city: 'xxx',
+//     children: [
+//         {name: 'xxx', city: 'xxx'},
+//         {name: '2xxx', city: '2xxx'}
+//     ]
+// };
+//
+// Object.defineProperty(obj, 'children', {
+//     enumerable: false,
+//     writable: false,
+//     value: 13
+// })
+//
+// console.log(obj)
+// console.dir({obj})
+// //Во второй аргумент можно писать разрешение видеть скрытие поля
+// // глубину вложенности разрешить подсветку разными цветами
+// console.dir({obj}, {showHidden: true, depth: 20, colors: true})
+
 /** 2 */
-// console.error(new Error('Whoops, something bad happened'));
-// Prints error message and stack trace to stderr:
-//   Error: Whoops, something bad happened
-//     at [eval]:5:15
-//     at Script.runInThisContext (node:vm:132:18)
-//     at Object.runInThisContext (node:vm:309:38)
-//     at node:internal/process/execution:77:19
-//     at [eval]-wrapper:6:22
-//     at evalScript (node:internal/process/execution:76:60)
-//     at node:internal/main/eval_string:23:3
+
+/** Замеряет время если заканчиваеться там */
+// console.time('Loop time')
+// const arr = [];
+//
+// for (let i = 0; i < 10000; i++) {
+//     arr.push(i)
+// }
+// console.timeEnd('Loop time')
 
 /** 3 */
-const name = 'Will Robinson';
-console.warn(`Danger ${name}! Danger!`);
-// Prints: Danger Will Robinson! Danger!, to stderr
+
+/** Делает тоже что и, но при этом программа не останавливаеться, но при этом мы увидем ошибку  */
+// console.trace('message');
+// throw new Error('message');
+// console.log('xxx')
+
 /** 4 */
-// const out = getStreamSomehow();
-// const err = getStreamSomehow();
-// const myConsole = new console.Console(out, err);
+
+/** Объяснению не подлежит */
+// console.log(Object.keys(console))
+
 /** 5 */
-// myConsole.log('hello world');
-const output = fs.createWriteStream('./stdout.log');
-const errorOutput = fs.createWriteStream('./stderr.log');
-// Custom simple logger
-const logger = new Console({ stdout: output, stderr: errorOutput });
-// use it like console
-const count = 5;
-logger.log('count: %d', count);
-// In stdout.log: count 5
 
-new Console({ stdout: process.stdout, stderr: process.stderr });
-console.assert(true, 'does nothing');
+/** удаляет все данные терминала */
+// console.clear()
 
-console.assert(false, 'Whoops %s work', 'didn\'t');
-// Assertion failed: Whoops didn't work
+/** 6 */
 
-console.assert();
-// Assertion failed
+/** Рисует нам таблицу в консоле */
+// const person = [
+//     {name: 'Max', surname: 'xxx', age: 20, job: 'frontend developer'},
+//     {name: 'Kirill', surname: 'xxx', age: 9e9, job: 'frontend developer'}
+// ]
+
+// console.table(person);
+
+/** 7 */
+
+/** Увеличивает отступ последующих строк пробелами по groupIndentation длине */
+// console.log("This is the outer level");
+// console.group();
+// console.log("Level 2");
+// console.group();
+// console.log("Level 3");
+// console.groupEnd();
+// console.log("Back to level 2");
+// console.groupEnd();
+// console.log("Back to the outer level");
+
+/** 8 */
+
+/** если значение правда то тогда нечего не выводиться  */
+// console.assert(true, 'does nothing');
+//
+// console.assert(false, 'Whoops work', 'didn\'t');
+// // Assertion failed: Whoops didn't work
+//
+// console.assert();
+// // Assertion failed
+
+/** 9 */
+
+/**
+ * Поддерживает специальный внутренний счетчик label и выводит
+ * stdout количество console.count() вызовов с заданным числом label.
+ */
+// console.count()
+// console.count('default')
+// console.count('abc')
+// console.count()
+
+/** Сбрасывает внутренний счетчик, относящийся к label */
+// console.countReset('abc');
+
+/** 10 */
+
+/**
+ *  Отображает список Описание объекта JavaScript.
+ *  Вывод представлен в виде иерархического списка с помощью просмотра дочерних объектов
+ */
+
+// console.dir()
+
+/** 11 */
+
+/** Выводит сообщение об ошибке в веб-консоль */
+// console.error('Error: I didn\'t like the way you look at me')
+
+/** 12 */
+
+/** Функция является псевдонимом console.log()*/
+// console.info(123)
+// console.log(123)
+
+/** 13 */
+
+/** Для таймера, который ранее был запущен вызовом console.time(), выводит прошедшее время */
+// console.time('process');
+// console.timeLog('process');
+// console.timeEnd('process');
+
+/** 14 */
+
+/** Выводит стэк трэйс в Веб Консоль */
+// console.trace('Show me');
+
+/** 15 */
+/** 16 */
+/** 17 */
