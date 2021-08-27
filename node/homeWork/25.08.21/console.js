@@ -2,14 +2,14 @@
 
 /** 1 */
 
-// const obj = {
-//     name: 'Andrey',
-//     city: 'xxx',
-//     children: [
-//         {name: 'xxx', city: 'xxx'},
-//         {name: '2xxx', city: '2xxx'}
-//     ]
-// };
+const obj = {
+    name: 'Andrey',
+    city: 'xxx',
+    children: [
+        {name: 'xxx', city: 'xxx'},
+        {name: '2xxx', city: '2xxx'}
+    ]
+};
 //
 // Object.defineProperty(obj, 'children', {
 //     enumerable: false,
@@ -113,12 +113,7 @@
 /** Выводит сообщение об ошибке в веб-консоль */
 // console.error('Error: I didn\'t like the way you look at me')
 
-/** 12 */
-
-/** Функция является псевдонимом console.log()*/
-// console.info(123)
-
-console.error('\x1b[31m', 'Color1');
+// console.error('\x1b[31m', 'Color1');
 /** Справка по цветам
  Reset = "\x1b[0m"
  Bright = "\x1b[1m"
@@ -146,6 +141,10 @@ console.error('\x1b[31m', 'Color1');
  BgCyan = "\x1b[46m"
  BgWhite = "\x1b[47m"
  */
+/** 12 */
+
+/** Функция является псевдонимом console.log()*/
+// console.info(123)
 
 /** 13 */
 
@@ -158,7 +157,3 @@ console.error('\x1b[31m', 'Color1');
 
 /** Выводит стэк трэйс в Веб Консоль */
 // console.trace('Show me');
-
-/** 15 */
-/** 16 */
-/** 17 */

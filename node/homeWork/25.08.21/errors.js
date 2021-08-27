@@ -1,12 +1,16 @@
 /** Распространение ошибок и перехват */
-
+let err = new Error('Error: 1234')
 /** Любое использование throw механизма JavaScript вызовет
  * исключение, которое необходимо обработать с помощью,
  * try catch иначе процесс Node.js завершится немедленно */
 try {
-    //code...
+    let error = new Error('Some error');
+    error.name = 'My Error';
+    error.customProperty = 'some value';
+    // noinspection ExceptionCaughtLocallyJS
+    // throw error;
 } catch (e) {
-    console.error(e)
+    console.log(e)
 }
 
 /** Обратные вызовы при первой ошибке */
@@ -34,10 +38,17 @@ function errorFirstCallback(err, data) {
 
 /**  Экземпляры объекта Error выбрасываются при возникновении ошибок во время выполнения */
 
+
 /**
  error.code Свойство является строкой метка,
  которая определяет вид ошибки. error.code
  это наиболее стабильный способ выявления ошибки.
+ */
+
+// console.error(err.code);
+
+/**
+ error.message свойство является строка описания ошибки
  */
 
 // console.error(err.message)
@@ -46,11 +57,29 @@ function errorFirstCallback(err, data) {
  * в коде, при которой Error был реализованным.
  */
 
-try {
-    let a = 0;
-    // a = a + dc;
-} catch (e) {
-    console.error(e.stack)
+// console.error(err.stack)
+function a() {
+    //code...
 }
 
+function b() {
+    //code...
+    // while (true) {
+    //     x++
+    // }
+}
 
+function c() {
+    throw new Error('Error:c')
+}
+
+try {
+    a();
+    b();
+    c();
+} catch (e) {
+    // Выводит 1 или 2 (если не произошло никаких других ошибок)
+    // console.log(e.code);
+    console.log(e.message);
+    console.log(e.stack);
+}
