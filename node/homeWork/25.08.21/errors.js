@@ -82,13 +82,13 @@ const fs = require('fs');
  * вызова окружающий код, включая try…catch блок, уже завершится.
  */
 
-new Promise((resolve, reject) => {
-    fs.readFile('/some/file/that/does-not-exist', (e, data) => {
-        // Mistaken assumption: throwing here...
-        if (e) {
-           throw new e;
-        }
-    });
-})
-    .then()
-    .catch(console.error);
+// new Promise((resolve, reject) => {
+//     fs.readFile('/some/file/that/does-not-exist', (e, data) => {
+//         // Mistaken assumption: throwing here...
+//         if (e) {
+//            throw new e;
+//         }
+//     });
+// })
+//     .then()
+//     .catch(console.error);

@@ -1,3 +1,15 @@
+/** const inspector = require('inspector') - получаем доступ к инспектору
+inspector.Session -                          используются для отправки сообщений на инспектору V8
+                                             и получение ответных сообщений.
+session.connect()                            Подключает сеанс инспектора.
+session.disconnect()                         Отключаемся от инспектора
+session.post(method[, params][, callback]) - Отправляет сообщение инспектору.
+                                             callback будет уведомлен, когда будет получен ответ.
+                                             callback - это функция, которая принимает два
+                                             необязательных аргумента: ошибку и результат,
+                                             зависящий от сообщения.
+*/
+
 // Инспектор... Модуль предоставляет API для взаимодействия с V8 инспектором
 const inspector = require('inspector');
 const fs = require('fs');
@@ -5,7 +17,6 @@ const fs = require('fs');
 /** inspector.SessionИспользуются для отправки сообщений на V8 инспектор
  *  фоновых и получение ответов сообщений и уведомления */
 const session = new inspector.Session();
-
 
 // console.log(Object.keys(inspector));
 
@@ -31,7 +42,7 @@ const session = new inspector.Session();
 /** Отправляет сообщение в серверную часть инспектора.
  callback будет уведомлен, когда будет получен ответ. */
 // session.connect();
-//
+
 // session.post('Profiler.enable', () => {
 //     session.post('Profiler.start', () => {
 //         // Вызов измеряемой бизнес-логики здесь...
@@ -56,16 +67,51 @@ const session = new inspector.Session();
 
 /** Пример использования */
 
-const fd = fs.openSync('profile.heapsnapshot', 'w');
-
+/**
+const inspector = require('inspector');
+const fs = require('fs');
+const session = new inspector.Session();
 session.connect();
 
+//пример показывающий как использовать CPU Profiler
+session.post('Profiler.enable', () => {
+  session.post('Profiler.start', () => {
+    session.post('Profiler.stop', (err, { profile }) => {
+      if (!err) {
+        fs.writeFileSync('./profile.cpuprofile', JSON.stringify(profile));
+      }
+    })
+  });
+});
+
+const fd = fs.openSync('profile.heapsnapshot', 'w');
+
+//пример показывающий как использовать профилировщик кучи
 session.on('HeapProfiler.addHeapSnapshotChunk', (m) => {
-    fs.writeSync(fd, m.params.chunk);
+  fs.writeSync(fd, m.params.chunk);
 });
 
 session.post('HeapProfiler.takeHeapSnapshot', null, (err, r) => {
-    console.log('HeapProfiler.takeHeapSnapshot done:', err, r);
-    session.disconnect();
-    fs.closeSync(fd);
+  console.log('HeapProfiler.takeHeapSnapshot done:', err, r);
+  session.disconnect();
+  fs.closeSync(fd);
 });
+ */
+
+/**
+const fs = require('fs');
+
+fs.readFile('index.html', "utf8", (err, data)=>{
+  console.log(data.replace("body", "div"));
+  fs.writeFile("index2.html", data.replace("body", "div"), (err) => {
+    console.log("ok");
+  });
+});
+
+fs.open('index.html', 'r', (err, fd) => {
+  fs.read(fd, (err, data, buff) => {
+    fs.write(fs.openSync('index3.html', 'w'), buff.toString("utf8").replace("body", "div"), (err) => {
+      console.log("ok");
+    });
+  });
+})*/

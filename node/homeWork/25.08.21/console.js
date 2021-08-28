@@ -10,13 +10,13 @@ const obj = {
         {name: '2xxx', city: '2xxx'}
     ]
 };
-//
+
 // Object.defineProperty(obj, 'children', {
 //     enumerable: false,
 //     writable: false,
 //     value: 13
 // })
-//
+
 // console.log(obj)
 // console.dir({obj})
 // //Во второй аргумент можно писать разрешение видеть скрытие поля
@@ -35,10 +35,12 @@ const obj = {
 // console.timeEnd('Loop time')
 
 /** 3 */
-
+console.error(' %s error', "console.err");
+console.warn('warn');
+console.info('info');
+console.log("console.log");
 /**   */
 // console.trace(err);
-
 
 /** 4 */
 
@@ -95,7 +97,7 @@ const obj = {
 // console.count('abc')
 // console.count()
 
-/** Сбрасывает внутренний счетчик, относящийся к label */
+/** Очищает счетчик для переданного label, если label не найдет, то выдаст предупреждение */
 // console.countReset('abc');
 
 /** 10 */
@@ -145,6 +147,9 @@ const obj = {
 /** Функция является псевдонимом console.log()*/
 // console.info(123)
 
+// console.log("┏━x━━━━━━━━━━━━━x━━━━━━━━━━━━━x━┓\n");
+// console.log("┃         console.log           ┃\n");
+// console.log("┗━x━━━━━━━━━━━━━x━━━━━━━━━━━━━x━┛\n");
 /** 13 */
 
 /** Для таймера, который ранее был запущен вызовом console.time(), выводит прошедшее время */
