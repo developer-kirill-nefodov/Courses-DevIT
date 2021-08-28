@@ -1,5 +1,5 @@
 /** Пример использования console: */
-
+const err = new Error('message');
 /** 1 */
 
 const obj = {
@@ -36,10 +36,9 @@ const obj = {
 
 /** 3 */
 
-/** Делает тоже что и, но при этом программа не останавливаеться, но при этом мы увидем ошибку  */
-// console.trace('message');
-// throw new Error('message');
-// console.log('xxx')
+/**   */
+// console.trace(err);
+
 
 /** 4 */
 

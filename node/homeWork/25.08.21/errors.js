@@ -1,17 +1,17 @@
 /** Распространение ошибок и перехват */
 let err = new Error('Error: 1234')
+const fs = require('fs');
 /** Любое использование throw механизма JavaScript вызовет
  * исключение, которое необходимо обработать с помощью,
  * try catch иначе процесс Node.js завершится немедленно */
-try {
-    let error = new Error('Some error');
-    error.name = 'My Error';
-    error.customProperty = 'some value';
-    // noinspection ExceptionCaughtLocallyJS
-    // throw error;
-} catch (e) {
-    console.log(e)
-}
+// try {
+//     const m = 1;
+//     const n = m + z;
+// } catch (err) {
+//     // Handle the error here.
+//     console.error(err)
+//
+// }
 
 /** Обратные вызовы при первой ошибке */
 
@@ -21,15 +21,15 @@ try {
  * функция обратного вызова с Error о бъектом (если есть), переданным в
  * качестве первого аргумента.
  */
-const fs = require('fs');
 
-function errorFirstCallback(err, data) {
-    if (err) {
-        console.error('There was an error', err);
-        return;
-    }
-    console.log(data);
-}
+
+// function errorFirstCallback(err, data) {
+//     if (err) {
+//         console.error('There was an error', err);
+//         return;
+//     }
+//     console.log(data);
+// }
 
 // fs.readFile('/some/file/that/does-not-exist', errorFirstCallback);
 // fs.readFile('/some/file/that/does-exist', errorFirstCallback);
@@ -52,34 +52,43 @@ function errorFirstCallback(err, data) {
  */
 
 // console.error(err.message)
+
 /**
  * error.stack Свойство является строка, описывающая точку
  * в коде, при которой Error был реализованным.
  */
 
-// console.error(err.stack)
-function a() {
-    //code...
-}
+/**
+ * JavaScript try…catch механизм не может быть использован для перехвата ошибок ,
+ * генерируемых асинхронным API. Распространенная ошибка новичков - попытаться
+ * использовать throw обратный вызов внутри ошибки:
+ */
 
-function b() {
-    //code...
-    // while (true) {
-    //     x++
-    // }
-}
+// try {
+//     fs.readFile('/some/file/that/does-not-exist', (err, data) => {
+//         // Mistaken assumption: throwing here...
+//         if (err) {
+//             throw err;
+//         }
+//     });
+// } catch (err) {
+//     // This will not catch the throw!
+//     console.error(err);
+// }
 
-function c() {
-    throw new Error('Error:c')
-}
+/**
+ * Это не сработает, потому что переданная функция обратного вызова
+ * fs.readFile() вызывается асинхронно. К моменту вызова обратного
+ * вызова окружающий код, включая try…catch блок, уже завершится.
+ */
 
-try {
-    a();
-    b();
-    c();
-} catch (e) {
-    // Выводит 1 или 2 (если не произошло никаких других ошибок)
-    // console.log(e.code);
-    console.log(e.message);
-    console.log(e.stack);
-}
+new Promise((resolve, reject) => {
+    fs.readFile('/some/file/that/does-not-exist', (e, data) => {
+        // Mistaken assumption: throwing here...
+        if (e) {
+           throw new e;
+        }
+    });
+})
+    .then()
+    .catch(console.error);
