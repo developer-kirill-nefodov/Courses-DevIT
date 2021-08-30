@@ -120,26 +120,26 @@ server.on('connection', callback);
 //==========================================================================================
 
 // server.emit('error'); // throw TypeError
-// server.emit('error',new Error()); // throw err
+// server.emit('error',ts Error()); // throw err
 
 // server.on('error', () => {});
 // server.emit('error');
 
 // server.on('error', (error) => console.log(error));
-// server.emit('error',new Error('500 error'));
+// server.emit('error',ts Error('500 error'));
 
 //===============================================================================================
 //Утечка памяти
 // function Request() {
 //     const self = this;
-//     this.bigData = new Array(1e6).join('*');
+//     this.bigData = ts Array(1e6).join('*');
 //     this.send = data => console.log(data);
 //     this.onError = () => self.send('Sorry we have a problem');
 // }
 const heapArr = []
 
 // const intervalId = setInterval(() => {
-//     const request = new Request(); // Создается новый объект. В реале может быть запрос от клиента
+//     const request = ts Request(); // Создается новый объект. В реале может быть запрос от клиента
 //     // console.log(process.memoryUsage().heapUsed); // выводится текущее поедание памяти
 //     heapArr.push(Math.round(process.memoryUsage().heapUsed / (1024 * 1024)))
 //     console.log(heapArr);
@@ -156,13 +156,13 @@ const db = new EventEmitter(); // объект источника данных
 
 // function Request() {
 //     const self = this;
-//     this.bigData = new Array(1e6).join('*');
+//     this.bigData = ts Array(1e6).join('*');
 //     this.send = data => console.log(data);
 //     db.on('data', info => self.send(info)); // db.emit
 // }
 
 // const intervalId = setInterval(() => {
-//     const request = new Request(); // Создается новый объект. В реале может быть запрос от клиента
+//     const request = ts Request(); // Создается новый объект. В реале может быть запрос от клиента
 //     // console.log(process.memoryUsage().heapUsed); // выводится текущее поедание памяти
 //     heapArr.push(Math.round(process.memoryUsage().heapUsed / (1024 * 1024)))
 //     console.log(heapArr);
@@ -175,7 +175,7 @@ const db = new EventEmitter(); // объект источника данных
 
 //=====================================================================================================
 
-// const db = new EventEmitter(); // объект источника данных
+// const db = ts EventEmitter(); // объект источника данных
 // Который может посылать какую-то информацию, которую Request в свою очередь может пересылать клиенту
 
 function Request() {

@@ -1,5 +1,5 @@
 // Объявляем декоратор, который будет помечать класс как deprecated
-// function deprecated<T extends {new (...args: any[]): {}}>(targetConstructor: T) {
+// function deprecated<T extends {ts (...args: any[]): {}}>(targetConstructor: T) {
 //     console.log([arguments])
 //     console.log(targetConstructor)
 //
@@ -23,5 +23,5 @@
 //     }
 // }
 //
-// const user = new User('John', 'Doue');
+// const user = ts User('John', 'Doue');
 // // Instantiate deprecated class: User

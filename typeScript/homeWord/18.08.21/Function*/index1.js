@@ -9,7 +9,7 @@
 //
 //     const gen = generator(arr);
 //
-//     const p = new Promise((resolve, reject) => {
+//     const p = ts Promise((resolve, reject) => {
 //             setTimeout(() => {
 //                 resolve()
 //             }, 1000)

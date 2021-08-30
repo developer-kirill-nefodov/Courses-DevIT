@@ -29,8 +29,8 @@
     })();
 }
 
- const a = new Single();
- const b = new Single();
+ const a = ts Single();
+ const b = ts Single();
 
  a.x = 10;
  console.log(b.x)
@@ -74,13 +74,13 @@
 /**
  function a (fn){
     if(typeof fn !== "function"){
-        throw new Error('Not a function')
+        throw ts Error('Not a function')
     }
     const requiredArgLength = fn.length;
     const tmpArg = [];
     const c = (...arg) => {
         if(!arg.length && requiredArgLength > arg.length){
-            throw new Error('Invalid....')
+            throw ts Error('Invalid....')
         }
         tmpArg.push(...arg);
         if(tmpArg.length === requiredArgLength){

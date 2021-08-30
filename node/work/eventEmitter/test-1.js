@@ -1,6 +1,8 @@
-const {EventEmitter} = require('events');
-const path = require('path');
 const fs = require("fs");
+const os = require('os');
+const path = require('path');
+
+const {EventEmitter} = require('events');
 
 const server = new EventEmitter();
 
@@ -29,6 +31,7 @@ server.on('test-2', function (a, b) {
 
     })
 })
+
 /** test-2 */
 
 class Some extends EventEmitter {
@@ -55,3 +58,28 @@ const some = new Some();
 // some.test_2('test-1.js', '../node-os')
 /** test-3 */
 
+let buff1, buff2, newSet;
+
+server.on('event-3.1', (arr) => buff1 = Buffer.from(arr))
+server.on('event-3.2', (arr) => buff2 = Buffer.from(arr))
+server.on('event-3.3', () => newSet = new Set([...buff1, ...buff2]))
+
+server.emit('event-3.1', [1, 2, 3, 4, 5, 6, 7, 8, 9, 0])
+server.emit('event-3.2', [1, 22, 33, 4, 5, 6, 7, 8, 9, 1e0])
+server.emit('event-3.3')
+
+// console.log(newSet)
+
+/** test-4 */
+
+server.on('event-4.1', (arch) => {
+    fs.readFile('./testFile.txt', (err, data) => {
+        if (err) throw new Error(err)
+
+        console.log('file changed')
+    })
+})
+server.on('event-4.2', () => {})
+
+server.emit('event-4.1')
+server.emit('event-4.2')

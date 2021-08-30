@@ -26,15 +26,15 @@ const session = new inspector.Session();
  host <string> Хост для прослушивания подключений инспектора. По желанию. По умолчанию: то, что было указано в CLI.
  wait <boolean> Блокировать, пока не подключится клиент. По желанию. По умолчанию: false .
  */
-// inspector.open(3001 , 'localhost', true)
+inspector.open(3001 , 'localhost', true)
 /** inspector.close Деактивировать инспектора. Блокирует до тех пор, пока нет активных подключений */
 // inspector.close()
 
 /** inspector.console Объект для отправки сообщений на удаленную консоль инспектора */
-// inspector.console.log('a message');
+inspector.console.log('a message');
 
 /** 'inspectorNotification' Выдается при получении любого уведомления от V8 Inspector. */
-// session.on('inspectorNotification', (message) => console.log(message.method));
+session.on('inspectorNotification', (message) => console.log(123));
 
 /** Подключает сеанс к бэкэнду инспектора. */
 // session.connect()
@@ -43,19 +43,20 @@ const session = new inspector.Session();
  callback будет уведомлен, когда будет получен ответ. */
 // session.connect();
 
-// session.post('Profiler.enable', () => {
-//     session.post('Profiler.start', () => {
-//         // Вызов измеряемой бизнес-логики здесь...
-//
-//         // some time later...
-//         session.post('Profiler.stop', (err, { profile }) => {
-//             // Записать профиль на диск, загрузить итд.
-//             if (!err) {
-//                 fs.writeFileSync('./profile.cpuprofile', JSON.stringify(profile));
-//             }
-//         });
-//     });
-// });
+/** Профайлер ЦП */
+session.connect();
+
+session.post('Profiler.enable', () => {
+    session.post('Profiler.start', () => {
+
+        session.post('Profiler.stop', (err, { profile }) => {
+
+            if (!err) {
+                fs.writeFileSync('./test/index.html', JSON.stringify(profile));
+            }
+        });
+    });
+});
 
 
 /** Вернуть URL активного инспектора или, undefined если его нет. */
@@ -70,7 +71,7 @@ const session = new inspector.Session();
 /**
 const inspector = require('inspector');
 const fs = require('fs');
-const session = new inspector.Session();
+const session = ts inspector.Session();
 session.connect();
 
 //пример показывающий как использовать CPU Profiler
