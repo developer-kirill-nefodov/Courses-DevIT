@@ -1,4 +1,6 @@
-import FastFood from "./fastFood";
+import FastFood from "./fastFood.js";
+import {person1, person2, person3, person4} from "./person.js";
+import {food1, food2, food3, drink1, drink2, drink3} from "./menu.js";
 
 class ShopGrid {
     private shopGrid: object = {
@@ -12,41 +14,87 @@ class ShopGrid {
             return `document commands...`
         }
 
-        /** 1 - create:string; 2 - cafe: string; 3 - address:string; 4 - title:string; */
         if (one.toLocaleLowerCase() === 'create') {
-            const length = this.shopGrid[0].length;
             switch (what.toLocaleLowerCase()) {
                 case('cafe'): {
-                    this.shopGrid[0][length] = new FastFood(others[0], others[1]);
+                    this.shopGrid['shop'][others[1]] = new FastFood(others[0], others[1]);
                     return `cafe with the name ${others[1]} created`
                 }
             }
         }
 
-        /** 1 - add:string; 2 - staff:string; 3 - number(shop); 4 - person:object */
         if (one.toLocaleLowerCase() === 'add') {
             if (what.toLocaleLowerCase() === 'staff') {
-               return this.shopGrid[0][others[0]].addStaff(others[1])
+                return this.shopGrid['shop'][others[1]].addStaff(others[0])
             }
             if (what.toLocaleLowerCase() === 'menu') {
-              return this.shopGrid[0][others[0]].addMenu(others[1])
+                return this.shopGrid['shop'][others[1]].addMenu(others[0])
             }
         }
 
-        /** 1 - update:string; 2 - number(shop); 3 - id:string; 4 - data:object */
-        if (one.toLocaleLowerCase() === 'update' && typeof +what === "number") {
-           return this.shopGrid[0][what].upData(others[0], others[1]);
+        if (one.toLocaleLowerCase() === 'update' && what) {
+            return this.shopGrid['shop'][others[1]].upData(what, others[0]);
         }
 
-        /** 1 - delete:string; 2 - number(shop); 3 - id:string */
         if (one.toLocaleLowerCase() === 'delete') {
-            return this.shopGrid[0][what].delete(others[0]);
+            return this.shopGrid['shop'][others[0]].delete(what);
         }
 
         if (one.toLocaleLowerCase() === 'get') {
-            return this.shopGrid[0]
+            if (what) {
+                switch (what.toLocaleLowerCase()) {
+                    case ('workers'):
+                        return this.shopGrid['shop'][others[0]].getWorkers();
+                    case ('menu'):
+                        return this.shopGrid['shop'][others[0]].getMenu();
+                }
+            }
+
+            return this.shopGrid['shop']
         }
     }
 }
 
-export default ShopGrid;
+const shopGrid = new ShopGrid();
+
+/**
+ * .run((1 - params), (2 - params), (3 - params), (4 - params))
+ *
+ * 1:string - (get | create | add | update | delete | help)
+ *
+ *    help:
+ *
+ *    get: {
+ *        2:sting - (workers | menu);
+ *        3:string - (nameShop);
+ *    }
+ *    create: {
+ *        2:string - (cafe);
+ *        3:string - (address);
+ *        4:string - (title)
+ *    }
+ *    add: {
+ *        2:string - (staff | menu)
+ *        3:object - ({type:string, name:string, price:number, calories:number, composition:array})
+ *    }
+ *    update: {
+ *        2:string - (id:string = idPerson | idMenu)
+ *        3:object - ({data})
+ *        4:string - (nameShop)
+ *    }
+ *    delete: {
+ *        2:string - (id:string = idPerson | idMenu)
+ *        3:string - (nameShop)
+ *    }
+ *
+ */
+
+console.log(shopGrid.run('get'));
+
+console.log(shopGrid.run('create', 'cafe', 'Новгороськая улица, 5-7', 'Кебаб Хаус'));
+
+console.log(shopGrid.run('ADD', 'staff', person1, 'Кебаб Хаус'));
+console.log(shopGrid.run('ADD', 'menu', drink1, 'Кебаб Хаус'));
+console.log(shopGrid.run('ADD', 'menu', food1, 'Кебаб Хаус'));
+
+console.log(shopGrid.run('get', 'menu', 'Кебаб Хаус'));

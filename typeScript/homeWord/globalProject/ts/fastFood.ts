@@ -1,12 +1,10 @@
-import ShopGrid from "./shopGrid";
-import Random_ID from "./random_ID";
-import {person1, person2, person3, person4} from "./person";
-import {food1, food2, food3, drink1, drink2, drink3} from "./menu";
+// import ShopGrid from "./shopGrid";
+import Random_ID from "./random_ID.js";
 
-export default class FastFood {
+class FastFood {
     public structure = {
-        title: null,
-        address: null,
+        title: this.title,
+        address: this.address,
         staff: [],
         menu: {
             food: [],
@@ -29,7 +27,7 @@ export default class FastFood {
         };
 
         if (18 > data.age) {
-            return 'Мы вам перезвонем!!!';
+            return 'Мы вам перезвоним!!!';
         }
 
         if (data.experienceWork <= 2) {
@@ -114,7 +112,6 @@ export default class FastFood {
                     return 'Error: You cannot add properties!!!';
                 }
             }
-
         }
         return `Запрос на обновление по такому id: ${id}, не выполнен!!!`
     }
@@ -133,7 +130,7 @@ export default class FastFood {
             if (key !== -1) {
                 let menuX = this.structure.menu[idx][key];
                 delete this.structure.menu[idx][key];
-                return `По жалобам клиентав из ${idx}, убрали ${menuX.name}`
+                return `По жалобам клиентов из ${idx}, убрали ${menuX.name}`
             }
         }
         return `Запрос на удаление по такому id: ${id}, не выполнен!!!`
@@ -159,27 +156,4 @@ export default class FastFood {
     }
 }
 
-const kebab = new FastFood('Новгороськая улица, 5-7', 'Кебаб Хаус');
-
-console.log(kebab.addStaff(person1))
-console.log(kebab.addStaff(person2))
-console.log(kebab.addStaff(person3))
-console.log(kebab.addStaff(person4))
-console.log(kebab.addMenu(food1))
-console.log(kebab.addMenu(food2))
-console.log(kebab.addMenu(food3))
-console.log(kebab.addMenu(drink1))
-console.log(kebab.addMenu(drink2))
-console.log(kebab.addMenu(drink3))
-
-
-console.log(kebab.upData('123', {}))
-/** Покупка
- console.log(kebab.purchase())
- console.log(kebab.purchase('Pizza'))
- console.log(kebab.purchase(30))
- console.log(kebab.purchase('yas'))
- console.log(kebab.purchase('Water'))
- console.log(kebab.purchase(30))
- console.log(kebab.purchase('no'))
- * */
+export default FastFood;
