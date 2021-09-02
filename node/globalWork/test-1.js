@@ -1,3 +1,5 @@
+#!./ node
+
 const {createReadStream, createWriteStream} = require('fs');
 
 const path = require('path');
@@ -28,13 +30,14 @@ const writeStream = createWriteStream(process.argv[3]);
 // }
 
 class myTransform extends Transform {
-    throttle = 0;
 
     constructor({throttle}) {
         super()
 
         if(typeof +throttle === "number") {
             this.throttle = throttle;
+        }else {
+            this.throttle = 0;
         }
 
         this.timeshtamp = 0;
@@ -42,12 +45,12 @@ class myTransform extends Transform {
     }
 
     _transform(chunk, encoding, callback) {
+
         const timeout = this.check()
-        // console.log(chunk.byteLength)
+        console.log(chunk.byteLength)
 
         setTimeout(() => {
             this.push(chunk);
-
             callback()
             this.update(chunk.length)
         }, timeout)
@@ -55,9 +58,10 @@ class myTransform extends Transform {
 
     check() {
         const diff = Date.now() - this.timeshtamp;
-        // console.log(diff)
         if (diff > 1000) return 0;
         if (this.count < this.throttle * 1024) return 0;
+
+        // process.stdout
 
         return 1000 - diff;
     }
@@ -73,7 +77,7 @@ class myTransform extends Transform {
 
 const trans = new myTransform({throttle: process.argv[4]})
 
-pipeline(readStream, trans, (err) => {
+pipeline(readStream, trans, writeStream, (err) => {
     if (err) throw new Error(err);
 })
 
