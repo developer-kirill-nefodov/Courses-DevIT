@@ -1,4 +1,3 @@
-// import ShopGrid from "./shopGrid";
 import Random_ID from "./random_ID.js";
 
 class FastFood {
@@ -136,9 +135,9 @@ class FastFood {
         return `Запрос на удаление по такому id: ${id}, не выполнен!!!`
     }
 
-    // purchase(data) {
-    //     return this.purchases.next(data).value
-    // }
+    purchase(data) {
+
+    }
 
     getMenu() {
         return this.structure.menu;

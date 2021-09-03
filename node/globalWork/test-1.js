@@ -7,8 +7,7 @@ const fs = require('fs');
 
 
 const file_1 = process.argv[2];
-let sizeFile = Math.round(fs.statSync(file_1).size);
-
+let sizeFile = Math.round(fs.statSync(file_1).size  / 1024**2 *100);
 
 const {
     // Readable,
@@ -23,16 +22,6 @@ const readStream = createReadStream(process.argv[2]);
 
 const writeStream = createWriteStream(process.argv[3]);
 
-// class CounterWriter extends Writable {
-//     constructor() {
-//         super();
-//     }
-//
-//     _write(chunk, encoding, callback) {
-//
-//         callback();
-//     }
-// }
 
 class myTransform extends Transform {
 
@@ -50,20 +39,24 @@ class myTransform extends Transform {
 
     _transform(chunk, encoding, callback) {
         process.stdout.cursorTo(0, 1);
-        process.stdout.clearLine(0, () => {
-        })
+        process.stdout.clearLine(0, () => {})
 
-        const timeout = this.check(chunk)
+        const timeout = this.check(chunk);
+
         let a = Math.round(this.throttle);
         let b = Math.round(sizeFile / this.throttle);
+        sizeFile-=a
 
-        process.stdout.write(`${a}kb/s; ${sizeFile -= a*100}kb; ${b}/s;`)
+        if(sizeFile < 0) sizeFile = 0;
+
+        process.stdout.write(`${a}kb/s; ${sizeFile}kb; ${b}/s;`)
+
         setTimeout(() => {
             this.push(chunk);
 
             callback()
             this.update(chunk.length)
-        }, 1000)
+        }, timeout)
     }
 
     check() {

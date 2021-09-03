@@ -7,7 +7,6 @@ const rl = readline.createInterface({
 
 const help = {call: 1, hall: 1, fifty_fifty: 1}
 
-<<<<<<< HEAD
 const question = [
     {
         winning: 10000,
@@ -67,138 +66,26 @@ let questing = 1;
 
 rl.question('Хотите стать миллионером?\n', (label) => {
     console.clear();
-    console.log('Вопросы для истинного разработчика javaScript!')
+    console.log('1 Вопрос для истинного разработчика javaScript!')
 
-    // if (label === 'yes') {
+// if (label === 'yes') {
     quest()
-=======
-let questing = 1;
-
-const question = [
-    {
-        winning: 1000,
-        question: 'who-1',
-        answers: {a: '', b: '', c: '', d: ''}
-    },
-    {
-        winning: 5000,
-        question: 'who-2',
-        answers: {a: '', b: '', c: '', d: ''}
-    },
-    {
-        winning: 20000,
-        question: '',
-        answers: {a: '', b: '', c: '', d: ''}
-    },
-    {
-        winning: 74000,
-        question: '',
-        answers: {a: '', b: '', c: '', d: ''}
-    },
-    {
-        winning: 900000,
-        question: '',
-        answers: {a: '', b: '', c: '', d: ''}
-    }
-];
-
-
-const result = {winning: 0, correct_answers: 0, wrong_answers: 0};
-
-
-rl.question('Хотите стать миллионером?\n', (label) => {
-    // if (label === 'yes') {
-        quest()
->>>>>>> 15e25d637fe8455a3d8149b6c55ad49f4cc90499
-    // } else {
-    //     rl.close()
-    // }
-});
-
-function quest() {
-<<<<<<< HEAD
-    console.log(`\n\
-     (help_hall) помощь зала: ${help.hall};\n\
-     (help_call) звонок другу: ${help.call};\n\
-       (help_fifty) 50_50: ${help.fifty_fifty};\n`
-    )
-
-    rl.question(`${question[questing - 1].question} \n`, (data) => {
-        if (questing === 6) {
-            console.log('Конец!!! У нас в стране новый миллионер')
-            console.log(result)
-        } else {
-            console.log(question[questing - 1].answers);
-        }
-    })
-
-}
+// }
+})
 
 rl.on('line', (line) => {
     switch (line.trim()) {
+        case ('help_hall' | 'help_call' | 'help_fifty') : {
+            fn(line.trim());
+        } break;
 
-        case ('help_hall') : {
-            fn();
-            return
-        }
-
-        case ('help_call') : {
-
-        }
-            break;
-
-        case ('help_fifty') : {
-            fn('help_fifty');
-            return;
-        }
-
-        case('a') : {
-            if (questing === 4) {
-                console.clear();
-                result.winning += question[questing - 1].winning;
-                result.correct_answers++
-
-                console.log('Это правельный ответ', result);
-                questing++;
-            } else {
-                result.wrong_answers++;
-                rl.close();
-                return;
-            }
-        }break;
-
-        case('b') : {
-            if (questing === 1) {
-                console.clear();
-                result.winning += question[questing - 1].winning;
-                result.correct_answers++
-
-                console.log('Это правельный ответ', result);
-                questing++;
-            } else {
-                result.wrong_answers++;
-                rl.close();
-                return;
-            }
-        }break;
-
-        case('c') : {
-            if (questing === 2) {
-                console.clear();
-                result.winning += question[questing - 1].winning;
-                result.correct_answers++
-
-                console.log('Это правельный ответ', result);
-                questing++;
-            } else {
-                result.wrong_answers++;
-                rl.close();
-                return;
-            }
-        }break;
-
-        case('d') : {
-            if (questing === 5 || 3) {
+        case('a' | 'b' | 'c' | 'd') : {
+            if (
+                (questing === 4 && line.trim() === 'a') ||
+                (questing === 1 && line.trim() === 'b') ||
+                (questing === 2 && line.trim() === 'c') ||
+                (questing === 3 || 5 && line.trim() === 'd')
+            ) {
                 console.clear();
                 result.winning += question[questing - 1].winning;
                 result.correct_answers++
@@ -217,98 +104,80 @@ rl.on('line', (line) => {
             rl.close();
             return;
         }
-=======
-    console.log(`\n (help_hall) помощь зала: ${help.hall};\n (help_call) звонок другу: ${help.call};\n (help_fifty) 50_50: ${help.fifty_fifty};\n`)
-
-    rl.question(`question_${questing} \n`, (data) => {
-
-        console.log(data)
-
-        if (questing < 6) {
-                // process.stdout.write(question[questing - 1].question);
-                // process.stdout.write(question[questing - 1].answers);
-                questing++;
-            } else {
-            console.log(123)
-        }
-
-    })
-
-}
-
-rl.on('line', (line) => {
-    console.log(line)
-    switch (line.toString()) {
-
-        case('a') : {
-            if (questing === 1) {
-                process.stdout.write('victory')
-            } else rl.close()
-        }
-            break;
-
-        case('b') : {
-            if (questing === 3) {
-                process.stdout.write('victory')
-            } else rl.close()
-        }
-            break;
-
-        case('c') : {
-            if (questing === 2) {
-                process.stdout.write('victory')
-            } else rl.close()
-        }
-            break;
-
-        case('d') : {
-            if (questing === 4) {
-                process.stdout.write('victory')
-            } else rl.close()
-        }
-            break;
-
-        default: rl.close()
->>>>>>> 15e25d637fe8455a3d8149b6c55ad49f4cc90499
     }
     quest()
 })
 
-<<<<<<< HEAD
-
 function fn(data) {
-    switch (data) {
-        case (data === 'help_hall'): {
-            if (help.hall > 0) {
+    if (help.hall > 0 && data === 'help_hall') {
+        switch (questing) {
+            case questing: {
+                help.hall--;
 
-            }
+            }break;
         }
-            break;
-        case (data === 'help_call'): {
-            if (help.call > 0) {
+    } else {
+        console.log('У вас нет попыток');
+    }
 
-            }
+    if (help.call > 0 && data === 'help_call') {
+        switch (questing) {
+            case questing: {
+                help.call--;
+
+            }break;
         }
-            break;
-        case (data === 'help_fifty'): {
-            if (help.fifty_fifty > 0) {
-                switch (questing) {
-                    case 1: {
-                        help.fifty_fifty--;
-                        delete question[0].answers.c
-                        delete question[0].answers.d
-                        quest()
-                    }
-                }
-            } else {
-                console.log('У вас нет попыток')
-            }
+    } else {
+        console.log('У вас нет попыток');
+    }
+
+    if (help.fifty_fifty > 0 && data === 'help_fifty') {
+        switch (questing) {
+            case questing: {
+                help.fifty_fifty--;
+                help_fifty();
+            }break;
         }
-            break;
+    } else {
+        console.log('У вас нет попыток')
     }
 }
-=======
-rl.on('close', ()=> {
-    console.log(result)
-})
->>>>>>> 15e25d637fe8455a3d8149b6c55ad49f4cc90499
+
+function quest() {
+    console.log(`\n\
+     (help_hall) помощь зала: ${help.hall};\n\
+     (help_call) звонок другу: ${help.call};\n\
+     (help_fifty) 50/50: ${help.fifty_fifty};\n`
+    )
+
+    rl.question(`${question[questing - 1].question} \n`, (data) => {
+        if (questing === 6) {
+            console.log('Конец!!! У нас в стране новый миллионер')
+            console.log(result)
+            rl.close()
+        } else {
+            console.log(question[questing - 1].answers);
+        }
+    })
+}
+
+function help_fifty() {
+    switch (questing) {
+        case 1 | 4: {
+            delete question[questing--].answers.c
+            delete question[questing--].answers.d
+        } break;
+        case 2: {
+            delete question[questing--].answers.a
+            delete question[questing--].answers.d
+        } break;
+        case 3 | 5: {
+            delete question[questing--].answers.a
+            delete question[questing--].answers.b
+        } break;
+    }
+}
+
+function help_call() {
+
+}
