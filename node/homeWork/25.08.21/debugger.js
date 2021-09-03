@@ -1,3 +1,6 @@
+// https://developer.chrome.com/docs/devtools/javascript/
+// https://googlechrome.github.io/devtools-samples/debug-js/get-started
+
 /** DEBUGGER
  *
  С помощью этого инструмента мы можем установить любую точку остановки,
@@ -15,22 +18,11 @@
  pause: Приостановить выполнение кода (например, кнопка паузы в Инструментах разработчика)
  */
 
-global.x = 5;
-setTimeout(() => {
-    debugger;
-    console.log('world');
-}, 1000);
-
-console.log('hello');
-
 /**
  При вызове отладчика выполнение скрипта приостановится
  в том месте, где находится выражение debugger, что
  равноценно действию установленных в скрипте точек останов
  */
-
-// https://developer.chrome.com/docs/devtools/javascript/
-// https://googlechrome.github.io/devtools-samples/debug-js/get-started
 
 /**
  * Пользовательский интерфейс панели источников состоит из 3 частей

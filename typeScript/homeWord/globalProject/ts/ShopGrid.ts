@@ -1,6 +1,6 @@
-import FastFood from "./fastFood.js";
-import {person1, person2, person3, person4} from "./person.js";
-import {food1, food2, food3, drink1, drink2, drink3} from "./menu.js";
+import FastFood from "./FastFood.js";
+import {person1, person2, person3, person4} from "./Person.js";
+import {food1, food2, food3, drink1, drink2, drink3} from "./Menu.js";
 
 class ShopGrid {
     private shopGrid: object = {

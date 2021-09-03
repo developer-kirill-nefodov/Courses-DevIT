@@ -1,6 +1,14 @@
 class Food {
     public type = 'food';
 
+    public composFood: Array<object> = [
+        {name: 'cheese', price: 8, composition: 14},
+        {name: 'cutlet', price: 14, composition: 30},
+        {name: 'meat', price: 17, composition: 40},
+        {name: 'chocolate', price: 10, composition: 30},
+
+    ]
+
     constructor(
         public name: string,
         public price: number,
@@ -10,9 +18,9 @@ class Food {
     }
 }
 
-const food1 = new Food('Hamburger', 57, 295, [1, 2, 3, 4])
-const food2 = new Food('Pizza', 43, 266, [1, 2, 3, 4])
-const food3 = new Food('Donut', 54, 452, [1, 2, 3, 4])
+const food1 = new Food('Hamburger', 57, 295, [0, 1, 2])
+const food2 = new Food('Pizza', 43, 266, [0, 2])
+const food3 = new Food('Donut', 54, 452, [3])
 
 
 class Drinks {

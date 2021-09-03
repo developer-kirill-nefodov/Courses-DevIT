@@ -76,4 +76,4 @@ Debugger
    }
 ---> finish
 
-4.
+4. сделайте как и в 3 только через inspector

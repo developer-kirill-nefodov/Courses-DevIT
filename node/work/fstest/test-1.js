@@ -37,8 +37,6 @@ function findFile(fileName, dirPath, cb) {
             throw new Error(e)
         }
 
-
-
     });
 }
 

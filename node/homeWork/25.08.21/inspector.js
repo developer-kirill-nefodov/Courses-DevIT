@@ -17,15 +17,13 @@ const fs = require('fs');
 /** inspector.SessionИспользуются для отправки сообщений на V8 инспектор
  *  фоновых и получение ответов сообщений и уведомления */
 const session = new inspector.Session();
-
-// console.log(Object.keys(inspector));
-
 /**
  inspector.open([port[, host[, wait]]])
  port <номер> Порт для прослушивания подключений инспектора. По желанию. По умолчанию: то, что было указано в CLI.
  host <string> Хост для прослушивания подключений инспектора. По желанию. По умолчанию: то, что было указано в CLI.
  wait <boolean> Блокировать, пока не подключится клиент. По желанию. По умолчанию: false .
  */
+console.log(777)
 inspector.open(3001 , 'localhost', true)
 /** inspector.close Деактивировать инспектора. Блокирует до тех пор, пока нет активных подключений */
 // inspector.close()
