@@ -29,7 +29,7 @@ const question = [
         }
     },
     {
-        winning: 200000,
+        winning: 140000,
         question: `Если 1+1=10, то сколько будет 1+10?`,
         answers: {
             a: '101',
@@ -39,7 +39,7 @@ const question = [
         }
     },
     {
-        winning: 340000,
+        winning: 300000,
         question: 'У вас было 5 яблок, 2 яблока вы положили к себе в карман, а одним\n яблоком угостили друга. Сколько яблок у вас осталось?',
         answers: {
             a: '4',
@@ -68,18 +68,21 @@ rl.question('Хотите стать миллионером?\n', (label) => {
     console.clear();
     console.log('1 Вопрос для истинного разработчика javaScript!')
 
-// if (label === 'yes') {
-    quest()
-// }
+    if (label === 'yes') {
+        quest();
+    }
 })
 
 rl.on('line', (line) => {
-    switch (line.trim()) {
-        case ('help_hall' | 'help_call' | 'help_fifty') : {
-            fn(line.trim());
-        } break;
+        if(
+            line.trim() === 'help_hall' ||
+            line.trim() === 'help_call' ||
+            line.trim() === 'help_fifty'
+        ) {
+            fn(line.trim())
+            return;
+        }
 
-        case('a' | 'b' | 'c' | 'd') : {
             if (
                 (questing === 4 && line.trim() === 'a') ||
                 (questing === 1 && line.trim() === 'b') ||
@@ -97,51 +100,8 @@ rl.on('line', (line) => {
                 rl.close();
                 return;
             }
-        }break;
-
-        default: {
-            console.log(result);
-            rl.close();
-            return;
-        }
-    }
-    quest()
+        quest()
 })
-
-function fn(data) {
-    if (help.hall > 0 && data === 'help_hall') {
-        switch (questing) {
-            case questing: {
-                help.hall--;
-
-            }break;
-        }
-    } else {
-        console.log('У вас нет попыток');
-    }
-
-    if (help.call > 0 && data === 'help_call') {
-        switch (questing) {
-            case questing: {
-                help.call--;
-
-            }break;
-        }
-    } else {
-        console.log('У вас нет попыток');
-    }
-
-    if (help.fifty_fifty > 0 && data === 'help_fifty') {
-        switch (questing) {
-            case questing: {
-                help.fifty_fifty--;
-                help_fifty();
-            }break;
-        }
-    } else {
-        console.log('У вас нет попыток')
-    }
-}
 
 function quest() {
     console.log(`\n\
@@ -150,34 +110,102 @@ function quest() {
      (help_fifty) 50/50: ${help.fifty_fifty};\n`
     )
 
+    if (questing === 6) {
+        console.log('Конец!!! У нас в стране новый миллионер')
+        console.log(result)
+        rl.close();
+        return;
+    }
+
     rl.question(`${question[questing - 1].question} \n`, (data) => {
-        if (questing === 6) {
-            console.log('Конец!!! У нас в стране новый миллионер')
-            console.log(result)
-            rl.close()
-        } else {
             console.log(question[questing - 1].answers);
-        }
-    })
+        })
+}
+
+function fn(data) {
+    if (data === 'help_hall') {
+        if(help.hall > 0) {
+            help.hall--;
+            help_hall();
+        } else console.log('У вас нет попыток');
+    }
+
+    if (data === 'help_call') {
+        if(help.call > 0) {
+            help.call--;
+            help_call();
+        } else console.log('У вас нет попыток');
+    }
+
+    if (data === 'help_fifty') {
+        if(help.fifty_fifty > 0) {
+            help.fifty_fifty--;
+            help_fifty();
+        }else console.log('У вас нет попыток')
+    }
+    quest();
 }
 
 function help_fifty() {
     switch (questing) {
         case 1 | 4: {
-            delete question[questing--].answers.c
-            delete question[questing--].answers.d
-        } break;
+            delete question[questing-1].answers.c
+            delete question[questing-1].answers.d
+        }break;
         case 2: {
-            delete question[questing--].answers.a
-            delete question[questing--].answers.d
-        } break;
+            delete question[questing-1].answers.a
+            delete question[questing-1].answers.d
+        }break;
         case 3 | 5: {
-            delete question[questing--].answers.a
-            delete question[questing--].answers.b
-        } break;
+            delete question[questing-1].answers.a
+            delete question[questing-1].answers.b
+        }break;
     }
 }
 
 function help_call() {
+    console.clear();
+    let xxx = 0;
+    const arrCall = ['Привет!!!', ' что', ' случилось???', ' Понял', ' думаю', ' правельный', ' ответ', ' .', '.', '.', '.', '. ']
+    const call = setInterval(() => {
+        process.stdout.write(arrCall[xxx])
+        if (xxx === arrCall.length - 1) {
+            switch (questing) {
+                case 1: {
+                    process.stdout.write('b');
+                    clearInterval(call);
+                }
+                    break;
+                case 2: {
+                    process.stdout.write('c');
+                    clearInterval(call);
+                }break;
+                case 3 | 5: {
+                    process.stdout.write('d');
+                    clearInterval(call);
+                }break;
+                case 4: {
+                    process.stdout.write('a');
+                    clearInterval(call);
+                }break;
+            }
+        } else xxx++;
+    }, 700)
+}
 
+function help_hall() {
+    switch (questing) {
+        case 1: {
+            process.stdout.write('\nb - 60% \na - 20% \nc - 10%\nd - 10% \n')
+        }break;
+        case 2: {
+            process.stdout.write('\nc - 99% \na - 0.5% \nb - 0.3%\nd - 0.2% \n')
+        }break;
+        case 3 | 5: {
+            process.stdout.write('\nd - 49.9% \na - 20.1% \nc - 17%\nb - 13% \n')
+        }break;
+        case 4: {
+            process.stdout.write('\na - 34% \nb - 33% \nc - 32%\nd - 1% \n')
+        }break;
+    }
 }

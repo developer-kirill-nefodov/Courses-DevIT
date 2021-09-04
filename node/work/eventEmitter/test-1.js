@@ -1,5 +1,4 @@
 const fs = require("fs");
-const os = require('os');
 const path = require('path');
 
 const {EventEmitter} = require('events');
@@ -75,11 +74,10 @@ server.emit('event-3.3')
 server.on('event-4.1', (arch) => {
     fs.readFile('./testFile.txt', (err, data) => {
         if (err) throw new Error(err)
-
         console.log('file changed')
     })
 })
-server.on('event-4.2', () => {})
+// server.on('event-4.2', () => {})
 
-server.emit('event-4.1')
-server.emit('event-4.2')
+// server.emit('event-4.1')
+// server.emit('event-4.2')

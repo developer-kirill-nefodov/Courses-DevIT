@@ -47,23 +47,6 @@ function dirCopy(dirSource, dirTarget, cb) {
     fs.cp(dirSource, dirTarget, {recursive: true}, cb);
 }
 
-dirCopy("files/", "files_copy/", (err) => {
-    if (err) throw new Error(err);
-});
-
-// function copyDir(dirSource, dirTarget) {
-//
-//     fs.copyFile(dirSource, dirTarget,  (err) => {
-//         if (err) {
-//             console.error(err);
-//         } else {
-//             console.log("success!");
-//         }
-//     });
-// }
-//
-// copyDir('../path', '../node-os')
-
-// 3. convertCsvToJson(sourcePathCsv, outputPathNewJson, options: {delimiter: ';', encoding: 'utf8'}, cb:(err)=>{})
-
-// 4. megaCalcPath(sourcePath, targetPath, length1, length2, action: '+' | '-', cb:(err, newFilePath)=>{})
+// dirCopy("files/", "files_copy/", (err) => {
+//     if (err) throw new Error(err);
+// });

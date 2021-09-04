@@ -1,59 +1,68 @@
+import {random_ID} from "./function.js";
+import Order from "./Order.js";
+
 class FastFood {
-    structure = {
-        title: null,
-        address: null,
+    private structure = {
+        title: this.title,
+        address: this.address,
         staff: [],
         menu: {
             food: [],
             drink: []
         },
+        orders: null,
         discount: []
     }
 
-
-
-    constructor(address, title) {
-        this.purchases = Purchase(this.structure.menu);
-        this.structure.address = address;
-        this.structure.title = title;
+    constructor(
+        public address: string,
+        public title: string) {
     }
 
-    addStaff(data) {
-        let newStaff = {};
+    addStaff(data): string {
+        let newStaff: object = {
+            name: null,
+            position: null
+        };
 
-        if (data.age < 18) {
-            return 'Мы вам перезвонем!!!';
+        if (18 > data.age) {
+            return 'Мы вам перезвоним!!!';
         }
 
         if (data.experienceWork <= 2) {
-            newStaff = Object.assign({}, data, {position: 'assistant', salary: 9000, id: Random_ID()});
+            // @ts-ignore
+            newStaff = Object.assign({}, data, {position: 'assistant', salary: 9000, id: random_ID()});
             this.structure.staff.push(newStaff);
 
             return (
+                // @ts-ignore
                 `${newStaff.name} принять на должность ${newStaff.position} в заведение ${this.structure.title}`
             )
         }
 
         if (data.experienceWork > 2 && data.experienceWork < 5) {
-            newStaff = Object.assign({}, data, {position: 'salesman', salary: 15000, id: Random_ID()});
+            // @ts-ignore
+            newStaff = Object.assign({}, data, {position: 'salesman', salary: 15000, id: random_ID()});
             this.structure.staff.push(newStaff);
 
             return (
+                // @ts-ignore
                 `${newStaff.name} принять на должность ${newStaff.position} в заведение ${this.structure.title}`
             )
         }
 
         if (data.experienceWork > 4) {
-            newStaff = Object.assign({}, data, {position: 'cook', salary: 25000, id: Random_ID()});
+            newStaff = Object.assign({}, data, {position: 'cook', salary: 25000, id: random_ID()});
             this.structure.staff.push(newStaff);
 
             return (
+                // @ts-ignore
                 `${newStaff.name} принять на должность ${newStaff.position} в заведение ${this.structure.title}`
             )
         }
     }
 
-    addMenu(data) {
+    addMenu(data): string {
         let newMenu = {};
         if (this.structure.menu.food.length > 0) {
             if (this.structure.menu.food.filter(key => key.name === data.name).length) return `Есть в меню`
@@ -64,23 +73,19 @@ class FastFood {
         }
 
         if (data.type === 'food') {
-            newMenu = Object.assign({}, data, {id: Random_ID()});
+            newMenu = Object.assign({}, data, {id: random_ID()});
             this.structure.menu.food.push({...newMenu});
             return `${data.name} добавлен`
         }
 
         if (data.type === 'drink') {
-            newMenu = Object.assign({}, data, {id: Random_ID()});
+            newMenu = Object.assign({}, data, {id: random_ID()});
             this.structure.menu.drink.push({...newMenu});
             return `${data.name} добавлен`
         }
     }
 
-    addDiscount() {
-        /** В разработке */
-    }
-
-    upData(id, data) {
+    upData(id: string, data): string {
         let key = this.structure.staff.map(p => p.id).indexOf(id);
 
         if (key !== -1) {
@@ -99,15 +104,14 @@ class FastFood {
                     Object.assign(Object.preventExtensions(this.structure.menu[idx][key]), data);
                     return `В меню ${key} произошло обновление`
                 } catch (e) {
-                    console.log('Error: You cannot add properties!!!');
+                    return 'Error: You cannot add properties!!!';
                 }
             }
-
         }
         return `Запрос на обновление по такому id: ${id}, не выполнен!!!`
     }
 
-    delete(id) {
+    delete(id: string): string {
         let key = this.structure.staff.map(p => p.id).indexOf(id);
 
         if (key !== -1) {
@@ -121,14 +125,53 @@ class FastFood {
             if (key !== -1) {
                 let menuX = this.structure.menu[idx][key];
                 delete this.structure.menu[idx][key];
-                return `По жалобам клиентав из ${idx}, убрали ${menuX.name}`
+                return `По жалобам клиентов из ${idx}, убрали ${menuX.name}`
             }
         }
         return `Запрос на удаление по такому id: ${id}, не выполнен!!!`
     }
 
-    purchase(data) {
-        return this.purchases.next(data).value
+    purchase(type, name, number = 1, additive = 'null', close = 'null') {
+        let num = number < 0 ? 1 : number
+
+        if (!this.structure.orders) {
+            const data = new Date();
+            this.structure.orders = new Order(0, 'open', data)
+        }
+
+            if (type === 'drink' || type === 'food') {
+                for (let key of this.structure.menu[type]) {
+                    if (key.name === name) {
+
+                        const newObj = {
+                            type: type,
+                            name: key.name,
+                            number: number,
+                            price: key.price,
+                            calories: key.calories,
+                            additive: [{name: additive}]
+                        }
+                        newObj.calories *= num;
+                        newObj.price *= num;
+
+                        if (additive !== 'null') {
+                            for (let idx of key.additive) {
+                                if (idx.name === additive) {
+                                    newObj.additive.push(idx.name)
+                                    newObj.price += idx.price;
+                                    newObj.calories += idx.calories;
+                                }
+                            }
+                        }
+
+                        if (close === 'close') {
+                            return this.structure.orders.closeOrd();
+                        }
+                        return this.structure.orders.addOrd(newObj);
+                    }
+                }
+            } else return 'no type'
+
     }
 
     getMenu() {
@@ -139,51 +182,12 @@ class FastFood {
         return this.structure.staff;
     }
 
-    averageSalary() {
+    averageSalary(): number {
         const ave = this.structure.staff
         const workers = ave.reduce((c, b) => c + b.salary, 0)
 
         return Math.round(workers / ave.length)
     }
-
-    registerSHOP() {
-        const idx = shopGrid.shopGrid.shop.map(e => e.title).indexOf(this.structure.title)
-        const data = {
-            title: this.structure.title,
-            address: this.structure.address,
-            staff: this.structure.staff.length,
-            menu: this.structure.menu,
-            discount: this.structure.discount
-        }
-
-        if (idx > -1) {
-            delete shopGrid.shopGrid.shop[idx];
-            shopGrid.shopGrid.shop.push(data)
-        } else {
-            shopGrid.shopGrid.shop.push(data)
-        }
-    }
 }
 
-const kebab = new FastFood('Новгороськая улица, 5-7', 'Кебаб Хаус');
-
-console.log(kebab.addStaff(person1))
-console.log(kebab.addStaff(person2))
-console.log(kebab.addStaff(person3))
-console.log(kebab.addStaff(person4))
-console.log(kebab.addMenu(food1))
-console.log(kebab.addMenu(food2))
-console.log(kebab.addMenu(food3))
-console.log(kebab.addMenu(drink1))
-console.log(kebab.addMenu(drink2))
-console.log(kebab.addMenu(drink3))
-
-/** Покупка
- console.log(kebab.purchase())
- console.log(kebab.purchase('Pizza'))
- console.log(kebab.purchase(30))
- console.log(kebab.purchase('yas'))
- console.log(kebab.purchase('Water'))
- console.log(kebab.purchase(30))
- console.log(kebab.purchase('no'))
- * */
+export default FastFood;
