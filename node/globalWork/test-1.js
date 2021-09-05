@@ -1,86 +1,95 @@
 #!/usr/bin/env node
 
 console.clear()
-const {createReadStream, createWriteStream} = require('fs');
 
-const path = require('path');
+const {
+    createReadStream,
+    createWriteStream
+} = require('fs');
+
 const fs = require('fs');
 
 const file_1 = process.argv[2];
 let sizeFile = Math.trunc(fs.statSync(file_1).size / 1024);
 
-
 const {
-    // Readable,
-    Writable,
-    // Duplex,
-
     Transform,
-    pipeline
 } = require('stream');
 
-const readStream = createReadStream(process.argv[2]);
 const writeStream = createWriteStream(process.argv[3]);
 
 class myTransform extends Transform {
     constructor() {
         super();
 
-        this.throttle = +process.argv[4]
+        this.speed = +process.argv[4];
 
-        this.idx = Math.trunc(sizeFile / this.throttle)
-        this.number = Math.trunc(sizeFile / 64);
+        this.timeLeft = Math.trunc(sizeFile / this.speed);
+        this.pushLeft = Math.trunc(sizeFile / 64);
 
         this.read_ = 0;
+        this.setInt = false;
     }
 
     _transform(chunk, encoding, callback) {
-        const int = setInterval(() => {
-            const timeout = this.check();
-            process.stdout.cursorTo(0, 1);
-            process.stdout.clearLine(0, () => {
-            })
+        const timeout = this.check();
 
-            this.read_ += this.throttle;
+        process.stdout.cursorTo(0, 1);
+        process.stdout.clearLine(0, () => {
+        })
 
-            if (this.read_ > sizeFile) this.read_ = sizeFile;
+        this.read_ += this.speed;
 
-            // console.log(this.idx, 'idx')
-            // console.log(this.number, 'number')
-            // console.log(this.throttle, 'throttle')
-            // console.log(sizeFile, 'sizeFile')
+        if (this.read_ > sizeFile) this.read_ = sizeFile;
 
+        process.stdout.write(
+            `<== ${this.speed}kb/s; === ${this.read_}kb; === file:${sizeFile}kb; === ${Math.trunc(this.timeLeft)}/s; ==>\n`
+        )
 
-            if (timeout === 1) {
-                this.push(chunk);
-            } else if (timeout === 0.5) {
+        if (timeout === 1) {
+            this.push(chunk);
+        } else if (timeout === 0.5) {
 
-            } else if (timeout === 0 && this.number === 1) {
-                this.push(chunk);
-                clearInterval(int)
-            } else if (timeout === 2) {
-                for (let num = 0; num < Math.round(this.number); num++) {
-                    this.push(chunk)
-                }
+            if (!this.setInt) {
+                this.setInt = true;
+
+                const int = setInterval(() => {
+
+                    this.timeLeft -= 1;
+                    this.read_ += this.speed;
+
+                    if (this.read_ > sizeFile) this.read_ = sizeFile;
+                    process.stdout.cursorTo(0, 1);
+                    process.stdout.clearLine(0, () => {
+                    })
+                    process.stdout.write(
+                        `<== ${this.speed}kb/s; === ${this.read_}kb; === file:${sizeFile}kb; === ${Math.trunc(this.timeLeft)}/s; ==>\n`
+                    )
+
+                    if (this.timeLeft === 1) {
+                        this.push(chunk);
+                        clearInterval(int);
+                    }
+                }, 1000);
             }
-            process.stdout.write(
-                `<== ${this.throttle}kb/s; === ${this.read_}kb; === file:${sizeFile}kb; === ${Math.trunc(this.idx)}/s; ==>\n`
-            )
-            callback()
-        }, 1000)
+        } else if (timeout === 2) {
+            for (let num = 0; num < Math.round(this.pushLeft); num++) {
+                this.push(chunk)
+            }
+        }
     }
 
     check() {
-        if (this.idx === 1 && this.number > 1) {
+        if (this.timeLeft === 1 && this.pushLeft > 1) {
             return 2;
-        } else if (this.idx > 1 && this.number === 1) {
-            this.idx -= 1;
+        } else if (this.timeLeft > 1 && this.pushLeft === 1) {
+            this.timeLeft -= 1;
             return 0.5;
-        } else if (this.idx === 1 && this.number === 1) {
+        } else if (this.timeLeft === 1 && this.pushLeft === 1) {
             return 0;
-        } else if (this.idx > 1 && this.number > 1) {
-            this.idx -= 1;
-            this.number -= 1;
+        } else if (this.timeLeft > 1 && this.pushLeft > 1) {
+            this.timeLeft -= 1;
+            this.pushLeft -= 1;
             return 1;
         }
     }
@@ -88,8 +97,13 @@ class myTransform extends Transform {
 
 const trans = new myTransform()
 
-pipeline(readStream, trans, writeStream, (err) => {
-    if (err) throw new Error(err);
-})
-
-
+try {
+    createReadStream(file_1, {encoding: 'utf-8'})
+        .on('data', async (chunk) => {
+            // only synchronous code here
+            await setTimeout(() => trans._transform(chunk), 1000);
+        })
+        .pipe(writeStream)
+} catch (e) {
+    console.log(e);
+}
