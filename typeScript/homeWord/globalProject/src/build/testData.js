@@ -1,41 +1,5 @@
-// import {person1, person2, person3} from "./Class.js";
-// import {drink1, drink2, drink3, food1, food2, food3} from "./Menu.js";
 import ShopGrid from "./ShopGrid.js";
-
-const shopGrid = new ShopGrid()
-
-/*
-addCompose(data: data) {
-        this.compos[data.type].push(data)
-        return `add ${data.name}`
-    }
-
-    deleteCompose(delData: delData) {
-
-    }
-
-const composFood: Array<object> = [
-    {name: 'cheese', price: 8, calories: 14},
-    {name: 'cutlet', price: 14, calories: 30},
-    {name: 'meat', price: 17, calories: 40},
-    {name: 'chocolate', price: 10, calories: 30},
-]
-
-const composDrink: Array<object> = [
-    {name: 'ice', price: 0, calories: 0},
-    {name: 'syrup', price: 5, calories: 13},
-    {name: 'milk', price: 3, calories: 9},
-    {name: 'sugar', price: 0, calories: 10},
-]
-
-const food1 = new Food1('Hamburger', 57, 295, [0, 1, 2])
-const food2 = new Food1('Pizza', 43, 266, [0, 2])
-const food3 = new Food1('Donut', 54, 452, [3])
-const drink1 = new Drinks('Water', 0, 0, [0, 1, 2, 3]);
-const drink2 = new Drinks('Sprite', 20, 39, [0, 1]);
-const drink3 = new Drinks('Coca-Cola', 20, 38, [0, 1]);
- */
-
+const shopGrid = new ShopGrid();
 /**
  * .run((1 - params), (2 - params), (3 - params), (4 - params), (5 - params), (6 - params), (7 - params))
  *
@@ -83,9 +47,7 @@ const drink3 = new Drinks('Coca-Cola', 20, 38, [0, 1]);
  *        7:string - (close) | default - null
  *    }
  */
-
 // console.log(shopGrid.run('help'));
-
 // console.log(shopGrid.run('create', 'cafe', 'Новгороськая улица, 5-7', 'Кебаб Хаус'));
 //
 // console.log(shopGrid.run('ADD', 'staff', person1, 'Кебаб Хаус'));

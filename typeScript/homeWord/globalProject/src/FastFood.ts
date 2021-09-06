@@ -1,5 +1,14 @@
+import {Person, TypeFood} from "./Class.js";
+
+
 import {random_ID} from "./function.js";
 import Order from "./Order.js";
+
+
+type person = { name: string, surname: string, age: number, experienceWork: number }
+type additive = { type: 'food' | 'drink', name: string, price: number, calories: number, typeFood: [{name:string}] }
+type menu = { type: 'food' | 'drink', name: string, price: number, calories: number}
+
 
 class FastFood {
     private structure = {
@@ -16,73 +25,64 @@ class FastFood {
 
     constructor(
         public address: string,
-        public title: string) {
-    }
+        public title: string) {}
 
-    addStaff(data): string {
-        let newStaff: object = {
-            name: null,
-            position: null
-        };
-
-        if (18 > data.age) {
-            return 'Мы вам перезвоним!!!';
-        }
+    addStaff(data: person): string {
+        if (18 > data.age) return 'Мы вам перезвоним!!!';
 
         if (data.experienceWork <= 2) {
-            // @ts-ignore
-            newStaff = Object.assign({}, data, {position: 'assistant', salary: 9000, id: random_ID()});
-            this.structure.staff.push(newStaff);
+            const newPerson = new Person(data.name, data.surname, data.age, data.experienceWork , 'assistant', 9000, random_ID())
+            this.structure.staff.push(newPerson);
 
             return (
-                // @ts-ignore
-                `${newStaff.name} принять на должность ${newStaff.position} в заведение ${this.structure.title}`
+                `${newPerson.name} принять на должность ${newPerson.position} в заведение ${this.structure.title}`
             )
         }
 
         if (data.experienceWork > 2 && data.experienceWork < 5) {
-            // @ts-ignore
-            newStaff = Object.assign({}, data, {position: 'salesman', salary: 15000, id: random_ID()});
-            this.structure.staff.push(newStaff);
+            const newPerson = new Person(data.name, data.surname, data.age, data.experienceWork , 'salesman', 15000, random_ID())
+            this.structure.staff.push(newPerson);
 
             return (
-                // @ts-ignore
-                `${newStaff.name} принять на должность ${newStaff.position} в заведение ${this.structure.title}`
+                `${newPerson.name} принять на должность ${newPerson.position} в заведение ${this.structure.title}`
             )
         }
 
         if (data.experienceWork > 4) {
-            newStaff = Object.assign({}, data, {position: 'cook', salary: 25000, id: random_ID()});
-            this.structure.staff.push(newStaff);
+            const newPerson = new Person(data.name, data.surname, data.age, data.experienceWork , 'cook', 25000, random_ID())
+            this.structure.staff.push(newPerson);
 
             return (
-                // @ts-ignore
-                `${newStaff.name} принять на должность ${newStaff.position} в заведение ${this.structure.title}`
+                `${newPerson.name} принять на должность ${newPerson.position} в заведение ${this.structure.title}`
             )
         }
     }
 
-    addMenu(data): string {
-        let newMenu = {};
+    addMenu(data: menu): string {
         if (this.structure.menu.food.length > 0) {
             if (this.structure.menu.food.filter(key => key.name === data.name).length) return `Есть в меню`
         }
 
         if (this.structure.menu.drink.length > 0) {
-            if (this.structure.menu.food.filter(key => key.name === data.name).length) return `Есть в меню`
+            if (this.structure.menu.drink.filter(key => key.name === data.name).length) return `Есть в меню`
         }
 
         if (data.type === 'food') {
-            newMenu = Object.assign({}, data, {id: random_ID()});
-            this.structure.menu.food.push({...newMenu});
-            return `${data.name} добавлен`
+            const newFood = new TypeFood(data.type, data.name, data.price, data.calories, random_ID())
+            this.structure.menu.food.push(newFood);
+            return `${newFood.name} добавлен`
         }
 
         if (data.type === 'drink') {
-            newMenu = Object.assign({}, data, {id: random_ID()});
-            this.structure.menu.drink.push({...newMenu});
-            return `${data.name} добавлен`
+            const newDrink= new TypeFood(data.type, data.name, data.price, data.calories, random_ID())
+            this.structure.menu.drink.push(newDrink);
+            return `${newDrink.name} добавлен`
         }
+    }
+
+    addAdditive(data: additive): string {
+
+        return ``
     }
 
     upData(id: string, data): string {
@@ -139,38 +139,38 @@ class FastFood {
             this.structure.orders = new Order(0, 'open', data)
         }
 
-            if (type === 'drink' || type === 'food') {
-                for (let key of this.structure.menu[type]) {
-                    if (key.name === name) {
+        if (type === 'drink' || type === 'food') {
+            for (let key of this.structure.menu[type]) {
+                if (key.name === name) {
 
-                        const newObj = {
-                            type: type,
-                            name: key.name,
-                            number: number,
-                            price: key.price,
-                            calories: key.calories,
-                            additive: [{name: additive}]
-                        }
-                        newObj.calories *= num;
-                        newObj.price *= num;
+                    const newObj = {
+                        type: type,
+                        name: key.name,
+                        number: number,
+                        price: key.price,
+                        calories: key.calories,
+                        additive: [{name: additive}]
+                    }
+                    newObj.calories *= num;
+                    newObj.price *= num;
 
-                        if (additive !== 'null') {
-                            for (let idx of key.additive) {
-                                if (idx.name === additive) {
-                                    newObj.additive.push(idx.name)
-                                    newObj.price += idx.price;
-                                    newObj.calories += idx.calories;
-                                }
+                    if (additive !== 'null') {
+                        for (let idx of key.additive) {
+                            if (idx.name === additive) {
+                                newObj.additive.push(idx.name)
+                                newObj.price += idx.price;
+                                newObj.calories += idx.calories;
                             }
                         }
-
-                        if (close === 'close') {
-                            return this.structure.orders.closeOrd();
-                        }
-                        return this.structure.orders.addOrd(newObj);
                     }
+
+                    if (close === 'close') {
+                        return this.structure.orders.closeOrd();
+                    }
+                    return this.structure.orders.addOrd(newObj);
                 }
-            } else return 'no type'
+            }
+        } else return 'no type'
 
     }
 

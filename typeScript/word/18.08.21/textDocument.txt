@@ -53,7 +53,7 @@ tom.name = "Bob";       // ! Ошибка - поле name - только для 
 Одним из ключевых моментов объектно-ориентированной парадигмы является наследование.
 В TypeScript наследование реализуется с помощью ключевого слова extends
 
-class Person {
+class Class {
 
     name: string;
     constructor(userName: string) {
@@ -65,7 +65,7 @@ class Person {
     }
 }
 
-class Employee extends Person {
+class Employee extends Class {
 
     company: string;
     work(): void {
@@ -73,9 +73,9 @@ class Employee extends Person {
     }
 }
 
-При наследовании класс Employee перенимает весь функционал класса Person - все его
+При наследовании класс Employee перенимает весь функционал класса Class - все его
 свойства и функции и может их использовать. И также можно определить в подклассе
- новые свойства и методы, которых нет в классе Person.
+ новые свойства и методы, которых нет в классе Class.
 
 /***************************************************************/
 Модификаторы доступа
@@ -89,14 +89,14 @@ class Employee extends Person {
 то такие свойства и функции расцениваются как будто они определены
 с модификатором public. То есть следующее определение класса:
 
-class Person {
+class Class {
      name: string;
      year: number;
  }
 
  Будет эквивалентно:
 
- class Person {
+ class Class {
      public name: string;
      public year: number;
  }
@@ -106,7 +106,7 @@ class Person {
   то к ним нельзя будет обратиться извне при создании объекта
   данного класса.
 
-   class Person {
+   class Class {
        private _name: string;
 
        constructor(name: string) {
@@ -118,7 +118,7 @@ class Person {
        }
    }
 
-   const tom = new Person("Tom", 24);
+   const tom = new Class("Tom", 24);
 
    // console.log(tom._name); // нельзя обратиться, так как _name - private
 
@@ -126,7 +126,7 @@ class Person {
 
     Модификатор protected определяет поля и методы, которые из вне класса видны только в классах-наследниках:
 
-    class Person {
+    class Class {
         protected name: string;
         constructor(name: string) {
             this.name = name;
@@ -138,7 +138,7 @@ class Person {
         }
     }
 
-    class Employee extends Person {
+    class Employee extends Class {
 
         constructor(name: string) {
             super(name);
