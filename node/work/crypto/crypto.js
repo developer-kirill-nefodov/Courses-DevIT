@@ -209,12 +209,9 @@ const {
 // console.log(decipher.write(encrypted, 'hex'));
 // decipher.end();
 
-// Пример: Использование Decipher потоковых и конвейерных потоков:
 // const algorithm = 'aes-192-cbc';
 // const password = 'Password used to generate key';
-// // Use the async `crypto.scrypt()` instead.
 // const key = scryptSync(password, 'salt', 24);
-// // The IV is usually passed along with the ciphertext.
 // const iv = Buffer.alloc(16, 0); // Initialization vector.
 //
 // const decipher = createDecipheriv(algorithm, key, iv);

@@ -2,8 +2,7 @@
 
 const fs = require('fs')
 
-fs.writeFile(process.argv[2], process.argv[3], () => {
-})
+fs.writeFile(process.argv[2], process.argv[3], ()=> {})
 
 const {
     open,
@@ -18,23 +17,21 @@ const os = require('os');
 const stream = require('stream');
 const size = process.argv[2];
 
-function fn() {
-    let tim = true;
+let tim = true;
+function fn () {
 
-    do {
         const idx = fs.statSync(size).size / 1024
-
+        setTimeout(() => {
             if (idx >= +process.argv[4]) {
                 tim = false
                 console.log(fs.statSync(size).size / 1024)
             } else {
                 fs.appendFile(process.argv[2], process.argv[3], (err) => {
-                    if (err) throw new Error()
+                    if(err) throw new Error()
                     console.log(fs.statSync(size).size / 1024)
                 })
             }
-
-    } while (tim)
+        }, 1000)
 
 
 }
