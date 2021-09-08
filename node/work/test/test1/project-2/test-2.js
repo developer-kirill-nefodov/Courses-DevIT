@@ -24,22 +24,27 @@ function fillArg() {
     if (process.argv.length < 6) throw new Error('Error: arg < 6')
 
     switch (process.argv[3]) {
-        case 'encode': {
-            structure1Dir(process.argv[6]);
-            folderToFile(structure1, process.argv[2]);
-            crypt(process.argv[4], process.argv[5])
+        case 'crypt': {
+            new Promise((resolve, reject) => {
+                structure1Dir(process.argv[6]);
+                resolve()
+            })
+                .then(() => folderToFile(structure1, process.argv[2]))
         }
             break;
 
-        case 'decode': {
-            decrypt(process.argv[2], process.argv[4], process.argv[4])
+        case 'decrypt': {
+            new Promise((resolve, reject) => {
+                decrypt(process.argv[2], process.argv[4], process.argv[4])
+                resolve()
+            })
+                .then(() => checkOutDir(process.argv[2]))
+                .then(() => fileToFolders('./srt.txt', './decrypto'))
         }
             break;
 
         default:
             throw new Error('Wrong action')
-
-
     }
 }
 
@@ -56,51 +61,39 @@ function folderToFile(files, output, offset = 0) {
             folderToFile(files, output, ++offset)
         })
     } else {
-        const fds = fs.openSync(output, 'a')
-        fs.writeSync(fds, '\nMETA\n')
-        for (const file of structure2) {
-            fs.writeSync(fds, file.join(',') + '\n')
-        }
-        fs.closeSync(fds);
+        new Promise((resolve) => {
+            const fds = fs.openSync(output, 'a')
+            fs.writeSync(fds, '\nMETA\n')
+            for (const file of structure2) {
+                fs.writeSync(fds, file.join(',') + '\n')
+            }
+            fs.closeSync(fds);
+
+            resolve()
+        })
+            .then(() => crypt('./srt1.txt', process.argv[4], process.argv[5]))
     }
 }
 
 
-function crypt(pass, salt) {
-    const algorithm = 'aes-192-cbc';
+function crypt(file, pass, salt) {
+
     const key = scryptSync(pass, salt, 24);
     const iv = Buffer.alloc(16, 0);
 
-    const decipher = createCipheriv(algorithm, key, iv);
-
-
-    pipeline(
-        createReadStream(process.argv[2]),
-        decipher,
-        createWriteStream('./srt1.txt'),
-        (err) => {
-            if (err) console.log(err)
-            // fs.rm(process.argv[2], ()=> {})
-        }
-    )
-
+    createReadStream(process.argv[2])
+        .pipe(createCipheriv('aes-192-cbc', key, iv))
+        .pipe(createWriteStream('./srt1.txt'))
 }
 
 function decrypt(file, pass, salt) {
-    const a = new Promise((resolve) => {
-        pipeline(
-            createReadStream(file),
-            createDecipheriv('aes-192-cbc', pass, salt),
-            createWriteStream(file),
-            () => {
-            }
-        )
-        resolve()
-    })
-
-    a
-        .then(() => checkOutDir(file))
-        .then(() => fileToFolders('./decDir', './file'))
+    pipeline(
+        createReadStream(file),
+        createDecipheriv('aes-192-cbc', pass, salt),
+        createWriteStream(file),
+        () => {
+        }
+    )
 }
 
 function fileToFolders(input, outDir) {
