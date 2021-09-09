@@ -1,96 +1,87 @@
-const {getIPRange} = require('get-ip-range')
+#!/usr/bin/env node
+// ./test-3.js 192.168.0.1/24 ./active.json
 
-const os = require('os');
 const fs = require('fs');
+const util = require('util');
 
-const {exec, spawn} = require('child_process')
+const {getIPRange} = require('get-ip-range');
 
-const Netmask = require('netmask').Netmask;
+const exec = util.promisify(require('child_process').exec);
 
-async function Glob() {
+const listIp = getIPRange(process.argv[2]);
 
-    const ipChunks = listToChunk(getIPRange(process.argv[2]), I)
+main(require('os').cpus().length - 1, process.argv[3])
 
+function getIp(ipArr) {
+    return ipArr.pop();
+}
 
-    let result = []
+async function ping(ip) {
 
-    for await (const value of {ipChunks, ...await ping(ipChunks), ...await ssh(ipChunks)}) {
-        result = result.concat(value);
+    try {
+        const {stdout} = await exec(`ping -c 1 ${ip}`);
+
+        console.log(ip, 'stdout:', stdout);
+
+        return {ping: true}
+    } catch (err) {
+        console.log(ip, 'no connect');
+
+        return {ping: false}
+    }
+}
+
+async function ssh(ip) {
+    try {
+        const {stdout} = await exec(`ssh root@${ip}`);
+        console.log(ip, 'stdout:', stdout);
+
+        return {ssh: true}
+    } catch (err) {
+        console.log(ip, 'no connect');
+
+        return {ssh: false}
+    }
+}
+
+async function collectObj(ip) {
+    const p = (await ping(ip));
+    if(p?.ping) {
+        const s = (await ssh(ip));
+        return p?.ping === true || s?.ssh === true ? {IP: ip, ping: p?.ping, ssh: s?.ssh} : null;
     }
 
-    console.log(result)
+    return p?.ping === true ? {IP: ip, ping: p?.ping} : null;
 }
 
-function ping(ip){
-    return new Promise((resolve) => {
-        resolve({ping: true, latency: 10})
+function Glob(arr, file) {
+    let newArr = [...arr];
+
+    new Promise((resolve) => {
+        const obj = collectObj(getIp(listIp))
+        if (obj) resolve(obj);
+        else resolve()
     })
+        .then((data) => {
+            if (data) newArr.push(data);
+            if (listIp.length) Glob(newArr, file)
+            else write(newArr, file)
+        })
+        .catch(console.err)
 }
 
-function ssh(ip) {
-    return new Promise((resolve) => {
-        resolve({ssh: false})
-    })
-}
-
-
-
-Glob().then()
-
-// function start(ip) {
-//     ip += 1
-//
-//     const child = spawn(`${ping}`, ['-c 1', IP[ip]])
-//
-//     child.stdout.on('data', (data) => {
-//             console.log(IP[ip], 'yes')
-//
-//
-//     })
-//
-//     child.stdout.on('error', (err) => {
-//         console.log(ip, 'no')
-//     })
-//
-//
-//
-//     child.on('close', () => {
-//
-//         start(ip)
-//
-//
-//     })
-//
-// }
-
-
-// function start1(idx) {
-//     console.log(IP[idx++])
-//
-//     exec(`${ping} -c 1 ${IP[idx]}`, (err, data) => {
-//         if (err) {
-//             // console.log(IP[idx], 'no')
-//         } else {
-//             // console.log(IP[idx], 'yes')
-//         }
-//     })
-//         .on('close', () => {
-//
-//             if (IP[idx]) {
-//                 start(idx += 1);
-//             }
-//
-//         })
-//
-// }
-
-
-function listToChunk(list, count) {
-    let i,j, tmp = [];
-
-    for (i = 0,j = list.length; i < j; i += count) {
-        tmp.push(list.slice(i, i + count))
+function main(count, file) {
+    for(let idx = 0; idx < count; idx++) {
+        Glob([], file)
     }
+    console.log('end')
+}
 
-    return tmp;
+function write(arr, file) {
+    if(file === 'console') {
+        console.log(JSON.stringify(arr))
+    } else {
+        fs.writeFileSync(file, JSON.stringify(arr), {flag: 'w'})
+    }
+    process.stdout.end()
 }

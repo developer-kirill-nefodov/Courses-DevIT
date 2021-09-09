@@ -247,18 +247,18 @@ console.log(myURL.hash);// #bar
 /**
 function f(url, str) {
     let u = new URL(url);
-    let res = '';
+    let test-3 = '';
     while (str.length > 0) {
         let i1 = str.indexOf('{');
         let i2 = str.indexOf('}');
 
-        res += str.slice(0, i1);
+        test-3 += str.slice(0, i1);
         let key = str.slice(i1 + 1, i2);
         str = str.slice(i2 + 1);
 
-        res += u[key];
+        test-3 += u[key];
     }
-    return res;
+    return test-3;
 }
 
 console.log(f('https://example:8080/A?123=321',
