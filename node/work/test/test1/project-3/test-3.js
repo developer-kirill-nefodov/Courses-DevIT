@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 // ./test-3.js 192.168.0.1/24 ./active.json
-
 const fs = require('fs');
 const util = require('util');
 
 const {getIPRange} = require('get-ip-range');
-
 const exec = util.promisify(require('child_process').exec);
 
 const listIp = getIPRange(process.argv[2]);
@@ -17,68 +15,57 @@ function getIp(ipArr) {
 }
 
 async function ping(ip) {
-
     try {
         const {stdout} = await exec(`ping -c 1 ${ip}`);
-
         console.log(ip, 'stdout:', stdout);
-
         return {ping: true}
     } catch (err) {
         console.log(ip, 'no connect');
-
         return {ping: false}
     }
 }
 
 async function ssh(ip) {
     try {
-        const {stdout} = await exec(`ssh root@${ip}`);
-        console.log(ip, 'stdout:', stdout);
-
+        // const {stdout} = await exec(`ssh root@${ip}`);
+        // console.log(ip, 'stdout:', stdout);
         return {ssh: true}
     } catch (err) {
         console.log(ip, 'no connect');
-
         return {ssh: false}
     }
 }
 
 async function collectObj(ip) {
     const p = (await ping(ip));
-    if(p?.ping) {
+    if (p?.ping) {
         const s = (await ssh(ip));
-        return p?.ping === true || s?.ssh === true ? {IP: ip, ping: p?.ping, ssh: s?.ssh} : null;
+        return s.ssh === true ? {IP: ip, ping: p.ping, ssh: s.ssh} : null;
     }
-
-    return p?.ping === true ? {IP: ip, ping: p?.ping} : null;
+    return null;
 }
 
-function Glob(arr, file) {
+async function Glob(arr, file) {
     let newArr = [...arr];
+    const obj = await collectObj(getIp(listIp))
 
-    new Promise((resolve) => {
-        const obj = collectObj(getIp(listIp))
-        if (obj) resolve(obj);
-        else resolve()
-    })
-        .then((data) => {
-            if (data) newArr.push(data);
-            if (listIp.length) Glob(newArr, file)
-            else write(newArr, file)
-        })
-        .catch(console.err)
+    if (obj) newArr.push(obj);
+
+    if (listIp.length) {
+        Glob(newArr, file).catch(console.log)
+
+    } else write(newArr, file)
 }
 
 function main(count, file) {
-    for(let idx = 0; idx < count; idx++) {
-        Glob([], file)
+    for (let idx = 0; idx < count; idx++) {
+        Glob([], file).catch(console.log)
     }
     console.log('end')
 }
 
 function write(arr, file) {
-    if(file === 'console') {
+    if (file === 'console') {
         console.log(JSON.stringify(arr))
     } else {
         fs.writeFileSync(file, JSON.stringify(arr), {flag: 'w'})

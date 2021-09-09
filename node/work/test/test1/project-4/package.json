@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "socket.io": "^4.2.0",
+    "ssh2": "^1.4.0"
+  },
+  "name": "project-4",
+  "version": "1.0.0",
+  "main": "page.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

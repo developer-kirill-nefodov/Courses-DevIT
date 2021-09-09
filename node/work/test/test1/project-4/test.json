@@ -1,0 +1,26 @@
+[
+  {
+    "host": "192.168.0.161",
+    "port": "22",
+    "username": "developer",
+    "password": "654321"
+  },
+  {
+    "host": "192.168.0.135",
+    "port": "22",
+    "username": "developer",
+    "password": "654321"
+  },
+  {
+    "host": "192.168.0.138",
+    "port": "22",
+    "username": "developer",
+    "password": "654321"
+  },
+  {
+    "host": "192.168.0.143",
+    "port": "22",
+    "username": "developer",
+    "password": "654321"
+  }
+]
