@@ -4,6 +4,8 @@ https://runebook.dev/ru/docs/node/perf_hooks
 https://blog.logrocket.com/experimental-node-js-testing-the-new-performance-hooks-31fcdd2a747e/
  */
 
+// Diagnostic report - записывает в файл диагностический отчет о текущем состоянии приложения.
+
 /*
 Этот модуль обеспечивает реализацию подмножества API-интерфейсов W3C Web Performance, а также дополнительных
 API-интерфейсов для измерения производительности, специфичной для Node.js.

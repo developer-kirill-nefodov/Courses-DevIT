@@ -9,6 +9,8 @@ const rl = readline.createInterface({
     output: process.stdout,
 });
 
+rl.prompt()
+
 const Connection = require('ssh2').Client;
 
 function Menu(page, file, ...data) {
@@ -21,31 +23,33 @@ function Menu(page, file, ...data) {
             creatTwo()
         }
             break;
-        case 'delete': {
-            deleteFn(file, [
-                {name: 'xxx', ip: 'ip', port: 123, user: 'xxx', pass: '12345'},
-                {name: 'xxx', ip: 'ip', port: 321, user: 'xxx', pass: '12345'},
-                {name: 'xxx', ip: 'ip', port: 213, user: 'xxx', pass: '12345'},
-            ])
-        }
-            break;
         case 'connect': {
-            connect(data[0], data[1])
+            connect(file)
+                .catch(console.error)
+
         }
             break;
+        case 'delete': {
+            deleteFn(file)
+                .catch(console.error)
+        }
+            break;
+        default: {
+            Path()
+        }
     }
 
 }
 
-// Menu('delete', '', [])
+// Menu()
 
 function creatOne() {
     process.stdout.write('\033c');
-    console.log('creat.txt')
+    console.log('<--- creatOne --->')
 
     rl.question('[c]', (label) => {
         if (label === 'c') {
-            Menu('two')
+            Menu('creatTwo')
         } else creatOne()
     })
 }
@@ -54,75 +58,30 @@ function creatTwo() {
     process.stdout.write('\033c');
 
     console.log('/ --- active tunnel --- /\n')
-    console.log('/ --- emptr --- /')
+    console.log('<--- creatTwo --->')
 
     rl.question('[c]', (label) => {
 
         if (label === 'd') {
-            Menu('delete')
-        } else creatTwo()
+            creatTwo()
+        } else Path()
 
     })
 }
 
-function deleteFn(fileCount, arr) {
-    const newArr = [
-        ...arr,
-    ]
+
+
+async function connect(file, err = null) {
+    const newArr = JSON.parse(await readFile(file));
 
     process.stdout.write('\033c');
-    console.log('creat.txt')
-
-    console.table(newArr)
-
-    rl.question('[num]', (label) => {
-        if (label <= newArr.length) {
-            newArr.splice(+label, 1)
-            deleteFn(0, newArr)
-        } else {
-            Menu('creat')
-        }
-    })
-}
-
-//  function getDataFile(file) {
-//     let a = [];
-//
-//     fs.readFile('test.json', (err, data) => {
-//         if(err) console.log(err)
-//        // console.log(data.toString())
-//
-//         a.push(JSON.parse(data))
-//         console.log(JSON.parse(data))
-//
-//     })
-//
-//
-// }
-//
-// getDataFile()
-//
-// rl.on('line', (data) => {
-//
-//     switch (data) {
-//         case 'menu': {
-//
-//         }
-//             break;
-//
-//         default: {
-//             rl.close()
-//         }
-//     }
-//
-// })
-
-function connect(arr) {
-    console.table(arr)
+    if (err) {
+        console.log("\x1b[31m", 'Error');
+    }
+    console.table(newArr);
 
     rl.question('[num]', (number) => {
         const c = new Connection();
-
 
         c.on('connect', () => {
             console.log('Connection :: connect');
@@ -135,7 +94,7 @@ function connect(arr) {
             //add awk '{print $4}'
             //add awk '{print $4}'
 
-            c.exec("netstat -lpt4en | awk '${print $4}'", {}, (err, stream) => {
+            c.exec("netstat -lpt4en | awk '{print $4, $NF}'", {}, (err, stream) => {
                 if (err) console.log(err);
 
                 stream.on('data', (data, extended) => {
@@ -155,64 +114,65 @@ function connect(arr) {
         });
         c.on('error', (err) => {
             console.log('Connection :: error :: ' + err);
+            connect(file, err)
         });
 
         c.connect({
-            host: arr[+number].host,
-            port: arr[+number].port,
-            username: arr[+number].username,
-            password: arr[+number].password
+            host: newArr[+number].host,
+            port: newArr[+number].port,
+            username: newArr[+number].username,
+            password: newArr[+number].password
         });
-
     })
-    // const conn = new Client();
-    //
-    // conn.on('ready', () => {
-    //     console.log('Client :: ready');
-    //     conn.exec('sudo docker ps', {pty: true},  (err, stream) => {
-    //         if (err) throw err;
-    //         stream.on('close', (code, signal) => {
-    //             conn.end();
-    //
-    //             // data comes here
-    //         }).on('data', (data) => {
-    //             console.log('STDOUT: ' + data);
-    //
-    //         }).stderr.on('data', (data) => {
-    //             console.log('STDERR: ' + data);
-    //         });
-    //         // stream.end(user.password+'\n');
-    //
-    //     });
-    //
-    // }).connect({
-    //         host: '192.168.0.143',
-    //         username: 'developer',
-    //         pass: 654321
-    //     }
-    // )
 }
 
-// connect([
-//     {host: '192.168.0.161', port: 22, username: 'developer', password: '654321'},
-//     {host: '192.168.0.135', port: 22, username: 'developer', password: '654321'},
-//     {host: '192.168.0.138', port: 22, username: 'developer', password: '654321'},
-//     {host: '192.168.0.143', port: 22, username: 'developer', password: '654321'},
-// ])
+// connect(readFile('./test.json'))
+
+
+
+function Path() {
+    process.stdout.write('\033c');
+
+    console.log('[creatOne] || [c1] --- ');
+    console.log('[creatTwo] || [c2] --- ');
+    console.log('[connect]  || [c3] --- ');
+    console.log('[delete]   || [d] --- \n');
+
+    rl.question('[?]', (label) => {
+        if (label === 'creatOne' || label === 'c1') Menu('creatOne');
+        else if (label === 'creatTwo' || label === 'c2') Menu('creatTwo');
+        else if (label === 'connect' || label === 'c3') Menu('connect', './test.json');
+        else if (label === 'delete' || label === 'd') Menu('delete', './test.json');
+        else Path()
+    })
+}
 
 function readFile(file) {
     return fs.readFileSync(file);
 }
 
-console.log(JSON.parse(readFile('./test.json')))
+function writeFile(file, arr) {
+    fs.writeFileSync(file, JSON.stringify(arr))
+}
 
-// const lineReader = require('readline').createInterface({
-//     input: require('fs').createReadStream('test.json')
-// });
-//
-// let arr = []
-// lineReader.on('line', function (line) {
-//
-//     console.log('Line from file:', line);
-// });
+async function deleteFn(fileArr) {
+    let newArr;
 
+    typeof fileArr === "string" ? newArr =
+        JSON.parse(await readFile(fileArr)) : newArr = fileArr;
+
+    process.stdout.write('\033c');
+    console.log('<--- delete --->');
+
+    console.table(newArr)
+
+    rl.question('[d]', (label) => {
+        if(label <= newArr.length) {
+            newArr.splice(+label, 1);
+            deleteFn(newArr);
+        } else {
+            writeFile('./test.json', newArr);
+            Path();
+        }
+    })
+}
