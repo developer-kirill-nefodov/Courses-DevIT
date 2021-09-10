@@ -386,7 +386,7 @@ const { createReadStream, createWriteStream } = require('fs');
       return stream;
   }
 
-  const readable = createReadableStreamWithThrottle('./data/test.json', { throttle: 1000 })
+  const readable = createReadableStreamWithThrottle('./data/test.txt', { throttle: 1000 })
   readable.pipe(process.stdout);
 */
 

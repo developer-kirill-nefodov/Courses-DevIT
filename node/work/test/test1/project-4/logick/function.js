@@ -1,4 +1,0 @@
-class DATA {
-    activeT = [];
-
-}
