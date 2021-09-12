@@ -4,15 +4,17 @@
 
 //Предоставляет сводку диагностики в формате JSON, записанную в файл.
 
-/*
+/**
 Отчет предназначен для разработки, тестирования и использования в
 производственной среде с целью сбора и сохранения информации для определения проблем.
  */
 
-//node --report-uncaught-exception --report-on-signal \
-// --report-on-fatal error app.js
+/**
+node --report-uncaught-exception --report-on-signal \
+--report-on-fatal error app.js
+*/
 
-/*
+/**
 --report-uncaught-exception Позволяет формировать отчет о невыявленных исключениях.
  Полезно при проверке стека JavaScript в сочетании с собственным стеком и другими данными среды выполнения.
 
@@ -28,8 +30,9 @@
 
 --report-filename Имя файла, в который будет записан отчет.
 
---report-signalУстанавливает или сбрасывает сигнал для создания отчета
+--report-signal Устанавливает или сбрасывает сигнал для создания отчета
  */
+
 //Создание отчетов на основе сигналов не поддерживается в Windows.
 
 //Отчет также может быть запущен с помощью вызова API из приложения JavaScript:
@@ -50,7 +53,7 @@
 // Similar to process.report.writeReport() output
 // console.log(JSON.stringify(report, null, 5));
 
-/*
+/**
   $node
 > process.report.writeReport();
  */

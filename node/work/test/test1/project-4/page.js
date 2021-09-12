@@ -2,13 +2,11 @@ const Store = require('./Store.js');
 
 const fs = require('fs');
 const os = require('os');
-
 const path = require('path');
 
 const readline = require('readline');
 
-const Connection = require('ssh2').Client;
-
+const {Client} = require('ssh2');
 
 const child = require('child_process');
 
@@ -18,11 +16,17 @@ const rl = readline.createInterface({
 });
 
 
-function Menu(page, file) {
+function Menu(page, ...data) {
     switch (page) {
         case 'active': {
-            const newArr = Store.getActive()
-            activeT(newArr);
+            /** newArr */
+            const newArr = Store.getActive();
+            // activeT(newArr);
+            activeT([
+                {name: 'kirill', ip: '192.168.0.169', port: 22, user: 'kiril@kirill', password: '654321'},
+                {name: 'kirill', ip: '192.168.0.169', port: 22, user: 'kiril@kirill', password: '654321'},
+                {name: 'kirill', ip: '192.168.0.169', port: 22, user: 'kiril@kirill', password: '654321'},
+            ]);
         }
             break;
         case 'connect': {
@@ -31,28 +35,34 @@ function Menu(page, file) {
         }
             break;
         case 'remote': {
-            const newArr = Store.getRemote()
-            remoteMachine(newArr)
+            const arrPort = Store.getPort();
+            remoteMachine(arrPort, data[0])
         }
             break;
-        case 'delete': {
-            // deleteFn(file)
-            //     .catch(console.error)
+
+        case 'tunnel': {
+            tunnel(data[0], data[1])
         }
             break;
         default: {
-
+            Menu('active')
         }
     }
-
 }
 
 function activeT(arr) {
     process.stdout.write('\033c');
 
-    console.log('/ --- active tunnel --- /\n')
+    console.log('/ --- active tunnel --- /')
+    console.log
+    (`\
+______________________________________________________________________
+|  <NAME>   |    <IP>     |   <PORT>   |   <USER>  |    <PASS>       |
+______________________________________________________________________\
+`)
+    if (arr.length) for (let key of arr) console.log
+    (`|  ${key.name}  |  ${key.ip}  |  ${key.port}  |  ${key.user}   |  ${key.password}  |`)
 
-    if (arr.length) console.table(arr)
 
     console.log('<--- new tunnel = [c] --->')
 
@@ -65,123 +75,108 @@ function activeT(arr) {
 
 // Menu('active')
 
-function connect(arr, err = null) {
-
-    const ssh = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDaQOpJZ5g0h9Fef9FbdSvNShfZ2PXYERlPntiDF9bUP2GRXvVmP+Ij8lxWp248Xp4SdsILQo2n6Xynb/D2ahN7z0Zqbivq1nQnKu/qr59P/m9ulWTHfyU09IKujkxyIrnuZu72YVB+1bICfF3sLi6kNWSc8DR7cZY5e2FW6qK1fayjFx0usyYqHlu6JF+18YdSmlFvfe/QdDTlC3uD5I+t9mV0IBK8Hy/otOv3MH6YwZ/k9LKAStl64PTzmHh4QetijN/qkMK+eTRGVP67/x4rVus9yEhjI0rJDeHtgGygBaY0jcfAelzDoAcqobzn9DY5AlF7uvEtJi1E5VwmitKj+/hiBCwuvYsf9RZtdwOSY8Nw+VUj3AT6YsjzYiSWrXaoYo24hMZUPm566fqE6T+Bky3MBG+2WeA43IfTU8iZJSBBOzFRnexgj3cjpIGvT9sODRWUxdfdR8BnNOyiOR4SlyZDc9Jn5avOkWTZnyqDv+UwsNqa/fwuwyxeS0ssteU= school@school4'
+function connect(arr) {
     // const ssh = fs.readFileSync(path.resolve(os.homedir(), '/.ssh/id_rsa.pub'))
+    const ssh = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDkO/LP5/b4mpC8qX9OXi4QW7YDCWR0lcxqqnbG+5mZHCVKy0J7zfCTAKxO+FiVx7VSI1RqjGvfAp2+IrqgyttsG+yT9u5OlLA5LUi+YpArAW0Pc7WXjeIP/EpY1D0vIq4NuQSn5TgN6xmtL8rX2FFzLHTHmELCbaUaT31Z+kdJvYMoksrJvUTBiq594UhpaPCgphkcB44M1rGsKlhH+dEa+Tpgj3CV82Ortw9S+fgOIDZF+GBFTTyz/HutoR4l+mG6Uq4TR174iObvs+XRg4OJ0J47j6BfQ/52Q/xnFRQP5R9nX3+CYJigcdSll6jEcE+QHFzP3IUHwGk30Zibec/H kiril@kiril-X551MA'
 
     process.stdout.write('\033c');
-
-    if (err) console.log("\x1b[31m", 'Error');
 
     console.table(arr);
 
     rl.question('[num]', (number) => {
 
 
-        const c = new Connection();
+        const obj = {
+            host: arr[+number].host,
+            port: arr[+number].port,
+            username: arr[+number].username,
+            password: arr[+number].password
+        }
+
+        console.log(obj);
+
+        const c = new Client();
 
 /// Error: Not connected!!!
-        // c.exec(`echo '${ssh}' >> ~/.ssh/authorized_keys`, {}, (err, stream) => {
-        //
-        //     if (err) throw err;
-        //
-        //     stream.on('close', function(code, signal) {
-        //         console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
-        //         c.end();
-        //     }).on('data', function(data) {
-        //         console.log('STDOUT: ' + data);
-        //     }).stderr.on('data', function(data) {
-        //         console.log('STDERR: ' + data);
-        //     });
-        //     stream.on('error', (err) => {
-        //         connect(arr, err)
-        //     });
-        // });
+        c.on('ready', () => {
+            c.exec(`echo '${ssh}' >> ~/.ssh/authorized_keys`, {}, (err, stream) => {
+                if (err) throw err;
 
-        // c.exec("netstat -lpt4en | awk '{print $4, $NF}'", {}, (err, stream) => {
-        //     if (err) console.error(err);
-        //
-        //     stream.on('data', (data, extended) => {
-        //         console.log(data);
-        //
-        //         let arr = [], newAtt = [], arrPort = [];
-        //         arr.push(...data.toString().split('\n'))
-        //
-        //         for (let idx of arr) {
-        //             if (idx[0]++ >= 0) newAtt.push(idx)
-        //         }
-        //
-        //         for (let idx of newAtt) {
-        //             let start = idx.indexOf(':');
-        //             let finish = idx.indexOf('-');
-        //
-        //             arrPort.push(idx.slice(start + 1, finish - 1))
-        //         }
-        //
-        //         Store.upDateRemote(arrPort);
-        //         Menu('remote')
-        //     });
-        // });
-        //
-        // c.on('error', (err) => connect(arr, err));
+                stream.on('close', (code, signal) => {
+                    console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
+                    c.end();
+                });
 
-        c.connect({
-            // host: arr[+number].host,
-            // port: arr[+number].port,
-            // username: arr[+number].username,
-            // password: arr[+number].password
+                stream.on('error', (err) => {
+                    console.log('ERROR CONNECT')
+                    setTimeout(() => connect(arr), 2000)
+                });
+            });
 
-            host: '192.168.0.161',
-            port: '22',
-            username: 'school',
-            password: '654321'
-        });
+            c.exec("netstat -lpt4en | awk '{print $4, $NF}'", {}, (err, stream) => {
+                if (err) console.error(err);
 
+                stream.on('data', (data, extended) => {
+                    console.log(data);
+
+                    Store.upDateRemotePort(data)
+                    Menu('remote', obj)
+                });
+            });
+
+            c.on('error', (err) => {
+                console.log('DATA ERROR')
+                setTimeout(() => connect(arr), 2000)
+            });
+
+            c.connect(obj);
+
+            // c.connect({
+            //     host: '192.168.0.107',
+            //     port: '22',
+            //     username: 'kiril@kiril-X551MA',
+            //     password: '12345678'
+            // });
+        })
     })
 }
 
 Menu('connect')
 
-function remoteMachine(arr) {
+function remoteMachine(arrPort, obj) {
     process.stdout.write('\033c');
 
-    for (let key of arr) console.log(`[${key}]`)
-
+    for (let key of arrPort) console.log(`[${key}]`)
     console.log('\n')
 
     rl.question('[?]', (port) => {
         let val = false;
 
-        for (let idx of arr) {
-            if (port === idx) val = true;
-        }
+        for (let idx of arrPort) if (port === idx) val = true;
 
-        if (val) {
-            lastPath(port)
-        } else {
-            remoteMachine(arr);
-        }
+        if (val) Menu('tunnel', port, obj)
+        else remoteMachine(arrPort, obj);
     })
 }
 
 // remoteMachine(['53', '22', '631', '6003'])
 
-function lastPath(obj) {
+function tunnel(PORT, obj) {
     const {host, port, username, password} = obj;
 
     process.stdout.write('\033c');
 
     console.log('Port\n')
-    rl.question(`[${port}]: `, (label) => {
+    rl.question(`[${PORT}]: `, (newPort) => {
 
-        console.log(`ssh -Lf ${label}:localhost:${port} ${username}@${host}`)
-        child.exec(`ssh -L ${label}:localhost:${port} ${username}@${host}`, (err) => {
-            if (err) console.error(err)
+        console.log(`ssh -L ${newPort}:localhost:${PORT} ${username}@${host}`)
+        //-q Тихий режим
+        child.exec(`ssh -L ${newPort}:localhost:${PORT} ${username}@${host}`, (err) => {
+            if (err) console.error(err);
             else {
                 Store.addActive({
                     host: host,
-                    port: port,
+                    port: PORT,
                     username: username,
                     password: password
                 })
@@ -203,13 +198,14 @@ function readFile(file) {
 
     for (let key of arr) {
         let idx = key.split(' ')
-        if (idx.length === 5) {
-            data.push({host: idx[1], port: idx[2], username: idx[3], password: idx[4]})
+        if (idx.length === 4) {
+            data.push({host: idx[0], port: idx[1], username: idx[2], password: idx[3]})
         }
     }
     return data;
 }
 
+// console.log(readFile('./test.txt'))
 
 // function Path() {
 //     process.stdout.write('\033c');
@@ -226,6 +222,5 @@ function readFile(file) {
 //         else Path()
 //     })
 // }
-
 
 // console.log(fs.createReadStream(path.resolve(os.homedir(), '/.ssh/id_rsa.pub')))
