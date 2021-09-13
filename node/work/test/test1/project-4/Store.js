@@ -16,18 +16,19 @@ class Store {
     }
 
     upDateRemotePort(data) {
+        console.log(data.toString())
         let arr = [], newAtt = [], arrPort = [];
         arr.push(...data.toString().split('\n'))
 
         for (let idx of arr) {
-            if (idx[0]++ >= 0) newAtt.push(idx)
+            if (+idx[0] >= 0) newAtt.push(idx)
         }
 
         for (let idx of newAtt) {
             let start = idx.indexOf(':');
-            let finish = idx.indexOf('-');
+            let finish = idx.indexOf(' ');
 
-            arrPort.push(idx.slice(start + 1, finish - 1))
+            arrPort.push(idx.slice(start + 1, finish))
         }
 
         this.port = arrPort;
