@@ -21,7 +21,6 @@ function Menu(page, ...data) {
         case 'active': {
             /** newArr */
             const newArr = Store.getActive();
-            // activeT(newArr);
             activeT(newArr);
         }
             break;
@@ -40,6 +39,11 @@ function Menu(page, ...data) {
             tunnel(data[0], data[1])
         }
             break;
+
+        case 'killTunnel': {
+            killTunnel(data[0])
+        }
+            break;
         default: {
             Menu('active')
         }
@@ -52,24 +56,29 @@ function activeT(arr) {
     console.log('/ --- active tunnel --- /')
     console.log
     (`\
-______________________________________________________________________
-|  <NAME>   |    <IP>     |   <PORT>   |   <USER>  |    <PASS>       |
-______________________________________________________________________\
+___________________________
+| <PORT>   |   <USERNAME> |
+___________________________\
 `)
-    if (arr.length) for (let key of arr) console.log
-    (`|  ${key.name}  |  ${key.ip}  |  ${key.port}  |  ${key.user}   |  ${key.password}  |`)
+    if (arr.length) {
+        for (let key of arr) console.log
+        (`| ${key.port}  |  ${key.username} |`)
+        console.log('<--- new tunnel = [c] --->')
+        console.log('<--- kill tunnel = [d] --->')
 
+        rl.question('[?]', (label) => {
+            if (label === 'c') Menu('connect');
+            else if (label === 'c') Menu('killTunnel', arr)
+            else activeT(arr);
+        })
+    } else {
+        console.log('<--- new tunnel = [c] --->');
 
-    console.log('<--- new tunnel = [c] --->')
-
-    rl.question('[c]', (label) => {
-
-        if (label === 'c') {
-            Menu('connect')
-        } else {
-            activeT(arr)
-        }
-    })
+        rl.question('[c]', (label) => {
+            if (label === 'c') Menu('connect');
+            else activeT(arr);
+        })
+    }
 }
 
 Menu('active')
@@ -92,11 +101,7 @@ function connect(arr) {
 
         fn(obj)
     })
-
-
 }
-
-// Menu('connect')
 
 function fn(obj) {
     const conn = new Client();
@@ -131,7 +136,6 @@ function fn(obj) {
     }).connect(obj);
 }
 
-
 function remoteMachine(arrPort, obj) {
     process.stdout.write('\033c');
 
@@ -148,8 +152,6 @@ function remoteMachine(arrPort, obj) {
     })
 }
 
-// remoteMachine(['53', '22', '631', '6003'])
-
 function tunnel(PORT, obj) {
     const {host, port, username, password} = obj;
 
@@ -160,23 +162,38 @@ function tunnel(PORT, obj) {
 
         console.log(`ssh -L ${newPort}:localhost:${PORT} ${username}@${host}`);
 
-        child.exec(`ssh -L ${newPort}:localhost:${PORT} ${username}@${host}`, (err, data) => {
+        child.exec(`ssh -f -L ${newPort}:localhost:${PORT} ${username}@${host}`, (err) => {
 
             if (err) console.error(err);
-            else {
-                Store.addActive({
-                    host: host,
-                    port: PORT,
-                    username: username,
-                    password: password
-                })
-
-                Menu('active')
-            }
-        }).on('error', (err)=> {
+        }).on('error', (err) => {
             console.log(err);
             setTimeout(() => tunnel(PORT, obj), 3000)
+        }).on('close', (data) => {
+            Store.addActive({
+                host: host,
+                port: PORT,
+                username: username,
+                password: password
+            })
+
+            Menu('active')
         });
+    })
+}
+
+function killTunnel(arr) {
+    process.stdout.write('\033c');
+
+    const newArr = [];
+
+    for (let key of arr) newArr.push({port: key.port, username: key.username})
+
+    console.table(newArr);
+    console.log('num delete')
+    rl.question('[d]', (num) => {
+        if (num <= newArr.length - 1) {
+
+        }
     })
 }
 
@@ -195,19 +212,3 @@ function readFile(file) {
     }
     return data;
 }
-
-// function Path() {
-//     process.stdout.write('\033c');
-//
-//     console.log('[creat]    || [c1] --- ');
-//     console.log('[connect]  || [c2] --- ');
-//     console.log('[delete]   || [d]  --- \n');
-//
-//     rl.question('[?]', (label) => {
-//         if (label === 'creatOne' || label === 'c1') Menu('creatOne');
-//         else if (label === 'creatTwo' || label === 'c2') Menu('creatTwo');
-//         else if (label === 'connect' || label === 'c3') Menu('connect', './test.txt');
-//         else if (label === 'delete' || label === 'd') Menu('delete', './test.txt');
-//         else Path()
-//     })
-// }
