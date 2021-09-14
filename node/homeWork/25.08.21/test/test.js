@@ -12,7 +12,7 @@ http.createServer((req, res) => {
         return;
     }
 
-    res.write(fs.readFileSync(__dirname + '/index.html', 'utf8'));
+    res.write(fs.readFileSync(__dirname + '/index.views', 'utf8'));
 }).listen(3000, () => {
     console.log('server works on port: 3000');
 });

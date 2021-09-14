@@ -29,13 +29,13 @@ function zip(source, des, three, level) {
     pipeline(sour, zip, dest).catch(console.log);
 }
 
-zip('html1.html', './newzip/1.html.gz', 'gzip', 9)
-zip('html2.html', './newzip/2.html.gz', 'gzip', 9)
-zip('html3.html', './newzip/3.html.gz', 'gzip', 9)
+zip('html1.views', './newzip/1.views.gz', 'gzip', 9)
+zip('html2.views', './newzip/2.views.gz', 'gzip', 9)
+zip('html3.views', './newzip/3.views.gz', 'gzip', 9)
 
-zip('html1.html', './newzip/html1.br', 'brotli', 11)
-zip('html2.html', './newzip/html2.br', 'brotli', 11)
-zip('html3.html', './newzip/html3.br', 'brotli', 11)
+zip('html1.views', './newzip/html1.br', 'brotli', 11)
+zip('html2.views', './newzip/html2.br', 'brotli', 11)
+zip('html3.views', './newzip/html3.br', 'brotli', 11)
 
 
 function compressedInfo(original, compressed) {
@@ -43,6 +43,6 @@ function compressedInfo(original, compressed) {
     console.log(`${compressed}: ${Math.round(fs.statSync(compressed).size / 1024)}kb.`)
 }
 
-// compressedInfo('./html1.html', './newzip/1.html.gz')
-// compressedInfo('./html2.html', './newzip/2.html.gz')
-// compressedInfo('./html3.html', './newzip/3.html.gz')
+// compressedInfo('./html1.views', './newzip/1.views.gz')
+// compressedInfo('./html2.views', './newzip/2.views.gz')
+// compressedInfo('./html3.views', './newzip/3.views.gz')

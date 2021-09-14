@@ -1,8 +1,8 @@
 const path = require('path');
 
 // basename - возвращает последнюю часть пути который ему передают
-// quux.html
-// const basePartPath =  path.basename('/foo/bar/baz/asdf/quux.html');
+// quux.views
+// const basePartPath =  path.basename('/foo/bar/baz/asdf/quux.views');
 // console.log(basePartPath);
 
 // dirname() -  возвращает место где лежит последний файл
@@ -14,7 +14,7 @@ const path = require('path');
 // console.log(exampleExt);
 
 // isAbsolute -  проверяет является ли путь абсолютным
-// console.log(path.isAbsolute('/asas.html'));
+// console.log(path.isAbsolute('/asas.views'));
 
 // join - объединяет пути
 // const concatPath = path.join('/home', 'Documents', 'Projects', '..');

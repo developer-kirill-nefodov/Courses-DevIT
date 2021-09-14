@@ -1,21 +1,26 @@
-const Store = require('./Store.js');
-
 const fs = require('fs');
 const os = require('os');
+
+//@ts-ignore
 const path = require('path');
+
 const readline = require('readline');
 const child = require('child_process');
 
 const {Client} = require('ssh2');
+
+//@ts-ignore
+const Store = require('./Store.js');
 
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
 });
 
-function Menu(page, ...data) {
+function Menu(page: string | void, ...data) {
     switch (page) {
         case 'active': {
+            //@ts-ignore
             const newArr = Store.getActive();
             activeT(newArr);
         }
@@ -26,23 +31,23 @@ function Menu(page, ...data) {
         }
             break;
         case 'remote': {
+            //@ts-ignore
             const arrPort = Store.getPort();
             remoteMachine(arrPort, data[0]);
         }
             break;
-
         case 'tunnel': {
             tunnel(data[0], data[1]);
         }
             break;
         default: {
-            Menu('active')
+            Menu('active');
         }
     }
 }
 
 function activeT(arr) {
-    process.stdout.write('\033c');
+    console.clear()
 
     console.log('/ --- active tunnel --- /')
     console.log
@@ -51,6 +56,7 @@ ___________________________
 | <PORT>   |   <USERNAME> |
 ___________________________\
 `)
+
     if (arr.length) {
         for (let key of arr) {
             console.log(`| ${key.port}  |  ${key.username} |`)
@@ -59,33 +65,43 @@ ___________________________\
         console.log('<--- [d + n] --->')
 
         rl.question('[?]', (label) => {
-            if (label === 'c') Menu('connect');
-            else if (label === 'd') Menu('killTunnel', arr)
-            else activeT(arr);
+            if (label === 'c') {
+                Menu('connect');
+            }
+            else if (label === 'd') {
+                Menu('killTunnel', arr);
+            }
+            else {
+                activeT(arr);
+            }
         })
     } else {
         console.log('<--- new tunnel = [c] --->');
 
         rl.question('[c]', (label) => {
-            if (label === 'c') Menu('connect');
-            else activeT(arr);
+            if (label === 'c') {
+                Menu('connect');
+            }
+            else {
+                activeT(arr);
+            }
         })
     }
 }
 
 function connect(arr) {
-    process.stdout.write('\033c');
+    console.clear()
 
     console.table(arr);
 
     rl.question('[num]', (number) => {
 
         if(number === 'c'){
-            Menu('active')
+            Menu('active');
         } else {
             if(number <= arr.length - 1) {
                 try {
-                   let obj = {
+                    let obj = {
                         host: arr[number].host,
                         port: arr[number].port,
                         username: arr[number].username,
@@ -120,11 +136,12 @@ function fn(obj) {
         conn.exec("netstat -lpt4en | awk '{print $4, $NF}'", {}, (err, stream) => {
             if (err) console.error(err);
 
-            stream.on('data', (data, extended) => {
+            stream.on('data', (data) => {
                 console.log(data.toString());
 
-                Store.upDateRemotePort(data)
-                Menu('remote', obj)
+                //@ts-ignore
+                Store.upDateRemotePort(data);
+                Menu('remote', obj);
             });
 
             stream.on('close', () => conn.end());
@@ -139,25 +156,30 @@ function fn(obj) {
 }
 
 function remoteMachine(arrPort, obj) {
-    process.stdout.write('\033c');
+    console.clear()
 
     for (let key of arrPort) console.log(`[${key}]`)
     console.log('\n')
 
     rl.question('[?]', (port) => {
-            let val = false;
+        let val = false;
 
-            for (let idx of arrPort) if (port === idx) val = true;
+        for (let idx of arrPort) {
+            if (port === idx) val = true;
+        }
 
-            if (val) Menu('tunnel', port, obj)
-            else remoteMachine(arrPort, obj);
+        if (val) {
+            Menu('tunnel', port, obj)
+        } else {
+            remoteMachine(arrPort, obj);
+        }
     })
 }
 
 function tunnel(PORT, obj) {
     const {host, port, username, password} = obj;
 
-    process.stdout.write('\033c');
+    console.clear()
 
     console.log('Port\n')
     rl.question(`[${PORT}]: `, (newPort) => {
@@ -169,6 +191,7 @@ function tunnel(PORT, obj) {
         childTunnel.on('close', ()=> {
             if(2999 < newPort && newPort > 10000) {
                 console.log('if true')
+                //@ts-ignore
                 Store.addActive({host: host, port: PORT, username: username, password: password});
 
                 Menu('active');
@@ -190,7 +213,7 @@ function tunnel(PORT, obj) {
 }
 
 function deleteTunnel(arr) {
-    process.stdout.write('\033c');
+    console.clear()
 
     const newArr = [];
 

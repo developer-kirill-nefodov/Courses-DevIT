@@ -1,23 +1,24 @@
+//@ts-ignore
 class Store {
-    activeT = [];
-    remoteMachine = [];
-    port = [];
+    private activeT = [];
+    private remoteMachine = [];
+    private port = [];
 
-    tunnel = [];
+    private tunnel = [];
 
     getTunnel() {
         return this.tunnel
     }
 
-    getRemote() {
+    getRemote(): Array<any> {
         return this.remoteMachine
     }
 
-    getActive() {
+    getActive(): Array<any> {
         return this.activeT
     }
 
-    getPort() {
+    getPort(): Array<any> {
         return this.port
     }
 
@@ -40,7 +41,7 @@ class Store {
         this.port = arrPort;
     }
 
-    addActive(obj) {
+    addActive(obj): void {
         this.activeT.push(obj)
     }
 }

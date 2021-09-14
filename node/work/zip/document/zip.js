@@ -21,8 +21,8 @@ const {
 Он основан на алгоритме DEFLATE, который использует комбинацию алгоритма LZ77 и алгоритма Хаффмана*/
 
 // const gzip = createGzip();
-// const source = createReadStream('sample-gzip.html');
-// const destination = createWriteStream('sample-gzip.html.gz');
+// const source = createReadStream('sample-gzip.views');
+// const destination = createWriteStream('sample-gzip.views.gz');
 
 // pipeline(source, gzip, destination, (err) => {
 //   if (err) if(err) throw new Error(err);
@@ -31,8 +31,8 @@ const {
 // Декомпрессия файла в начальное состояние
 
 // const unzip = createUnzip();
-// const source = createReadStream('sample-gzip.html.gz');
-// const destination = createWriteStream('sample2-gzip.html');
+// const source = createReadStream('sample-gzip.views.gz');
+// const destination = createWriteStream('sample2-gzip.views');
 
 // pipeline(source, unzip, destination, (err) => {
 //   if(err) throw new Error(err);
@@ -49,8 +49,8 @@ const {
 // Компрессия алгоритмом Бротли
 
 // const brotli = createBrotliCompress();
-// const source = createReadStream('sample-brotli.html');
-// const destination = createWriteStream('sample-brotli.html.br');
+// const source = createReadStream('sample-brotli.views');
+// const destination = createWriteStream('sample-brotli.views.br');
 //
 // pipeline(source, brotli, destination, (err) =>{
 //   if(err) throw new Error(err);
@@ -59,8 +59,8 @@ const {
 // Декомпрессия алгоритмом Бротли
 
 // const brotli = createBrotliDecompress();
-// const source = createReadStream('sample-brotli.html.br');
-// const destination = createWriteStream('sample2-brotli.html');
+// const source = createReadStream('sample-brotli.views.br');
+// const destination = createWriteStream('sample2-brotli.views');
 
 // pipeline(source, brotli, destination, (err) =>{
 //   if(err) throw new Error(err);
@@ -74,8 +74,8 @@ Brotli - Сжатие лучше, чем у Gzip, но скорость при �
 // Deflate/Inflate
 
 // const def = createDeflate();
-// const source = createReadStream('sample-deflate.html');
-// const destination = createWriteStream('sample-deflate.html.zz')
+// const source = createReadStream('sample-deflate.views');
+// const destination = createWriteStream('sample-deflate.views.zz')
 
 // pipeline(source, def, destination, (err) =>{
 //   if(err) throw new Error(err);
@@ -84,8 +84,8 @@ Brotli - Сжатие лучше, чем у Gzip, но скорость при �
 // Декомпрессия
 
 // const def = createInflate();
-// const source = createReadStream('sample-deflate.html.zz');
-// const destination = createWriteStream('sample2-deflate.html');
+// const source = createReadStream('sample-deflate.views.zz');
+// const destination = createWriteStream('sample2-deflate.views');
 
 // pipeline(source, def, destination, (err) =>{
 //   if(err) throw new Error(err);
@@ -108,7 +108,7 @@ Deflate это по сути формат сжатых данных, а gzip - �
 //   await pipe(source, gzip, destination);
 // }
 
-// compress('sample-gzip.html', 'sample-gzip.gz').catch((err)=>{
+// compress('sample-gzip.views', 'sample-gzip.gz').catch((err)=>{
 //   console.error('Some Error Happend: ', err);
 //   process.exitCode = 1;
 // });
@@ -167,7 +167,7 @@ chunkSize<integer> - размер чанки, по умолчанию 16*1024
 
 // https://youtu.be/mcTNM7x5oOQ?t=119
 
-/*1. Создать 3 html файла размерами 1, 2, 3 MB (примерно), сжать и декомпрессировать каждый из них через gzip и brotli,
+/*1. Создать 3 views файла размерами 1, 2, 3 MB (примерно), сжать и декомпрессировать каждый из них через gzip и brotli,
 Написать функцию вида function compressedInfo(originalFilePath, compressedFilePath), которая показывает размеры исходного и сжатого файла
 2. Сделать то же самое что и в первой задаче, но передав в качестве параметров уровень сжатия - сначала самый низкий 1, а затем максимальный
 (9 для gzip, 11 для brotli) и сравнить результаты минимальной компрессии, дефолтной компрессии и максимальной компрессии.*/
@@ -178,8 +178,8 @@ chunkSize<integer> - размер чанки, по умолчанию 16*1024
 //     [zlib.constants.BROTLI_PARAM_QUALITY]: 4,
 //   }
 // });
-// const source = createReadStream('sample-brotli.html');
-// const destination = createWriteStream('sample-brotli.html.br');
+// const source = createReadStream('sample-brotli.views');
+// const destination = createWriteStream('sample-brotli.views.br');
 //
 // pipeline(source, stream, destination, (err) =>{
 //   if(err) throw new Error(err);

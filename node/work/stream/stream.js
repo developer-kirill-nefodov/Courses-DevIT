@@ -157,7 +157,7 @@ const { createReadStream, createWriteStream } = require('fs');
     writer.write(`${i}`)
   }
 
-  const readStream = createReadStream('./data.html');
+  const readStream = createReadStream('./data.views');
   const writeStream = createWriteStream('./copy.copy');
 
   readStream.on('data', chunk => {

@@ -50,7 +50,7 @@ session.post('Profiler.enable', () => {
         session.post('Profiler.stop', (err, { profile }) => {
 
             if (!err) {
-                fs.writeFileSync('./test/index.html', JSON.stringify(profile));
+                fs.writeFileSync('./test/index.views', JSON.stringify(profile));
             }
         });
     });
@@ -100,16 +100,16 @@ session.post('HeapProfiler.takeHeapSnapshot', null, (err, r) => {
 /**
 const fs = require('fs');
 
-fs.readFile('index.html', "utf8", (err, data)=>{
+fs.readFile('index.views', "utf8", (err, data)=>{
   console.log(data.replace("body", "div"));
-  fs.writeFile("index2.html", data.replace("body", "div"), (err) => {
+  fs.writeFile("index2.views", data.replace("body", "div"), (err) => {
     console.log("ok");
   });
 });
 
-fs.open('index.html', 'r', (err, fd) => {
+fs.open('index.views', 'r', (err, fd) => {
   fs.read(fd, (err, data, buff) => {
-    fs.write(fs.openSync('index3.html', 'w'), buff.toString("utf8").replace("body", "div"), (err) => {
+    fs.write(fs.openSync('index3.views', 'w'), buff.toString("utf8").replace("body", "div"), (err) => {
       console.log("ok");
     });
   });
