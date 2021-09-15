@@ -1,52 +1,130 @@
+//@ts-ignore
+const net = require('net');
+
+//@ts-ignore
 const fs = require('fs');
+//@ts-ignore
 const os = require('os');
 
 //@ts-ignore
 const path = require('path');
 
 const readline = require('readline');
+//@ts-ignore
 const child = require('child_process');
 
 const {Client} = require('ssh2');
 
 //@ts-ignore
-const Store = require('./Store');
+const store = require('./Store');
+const unixSocket = '../mySocket';
+
+const server = net.createServer()
+
+const menuF = require('./menuF')
+
+readFile(__dirname+'/test.txt')
+
+server.on('connection', (socket) => {
+    console.log('connect');
+
+    //data: {met: 'active', label: 'c|num'}
+    socket.on('data', (data) => {
+        data = JSON.parse(data.toString())
+
+        console.log(data)
+        const {method, label} = data
+        new Promise((resolve) => {
+            // @ts-ignore
+
+            //@ts-ignore
+
+
+            // //res:string = active, connect,  remote, tunnel, err
+            const res = menuF(method, label)
+
+            if (res === 'err') {
+                throw new Error('error')
+            }
+
+            //@ts-ignore
+            resolve(0);
+        }).then(() => {
+            if (method === 'active') {
+                const newObj = {
+                    method: 'active',
+                    label: store.getActive()
+                }
+                socket.write(JSON.stringify(newObj))
+            }
+            if (method === 'connect') {
+                socket.write(JSON.stringify(store.getRemoteMach()))
+            }
+            if (method === 'remote') {
+                socket.write(JSON.stringify(store.getPortArr()))
+            }
+            if (method === 'tunnel') {
+                const newObj = {
+                    remote: store.getRemoteObj(),
+                    port: store.getPort()
+                }
+
+                socket.write(JSON.stringify(newObj))
+            }
+        }).catch(() => {
+            socket.write('err')
+        })
+
+
+        socket.on('close', () => console.log('socket close'));
+    })
+})
+
+server.listen(unixSocket);
+
+server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        fs.unlink(unixSocket, () => server.listen(unixSocket));
+    } else {
+        console.log(err);
+    }
+});
 
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
 });
 
-function Menu(page: string | void, ...data) {
+function MenuC(page: string | void, ...data) {
     switch (page) {
         case 'active': {
             //@ts-ignore
-            const newArr = Store.getActive();
-            activeT(newArr);
+            const newArr = store.getActive();
+            activeC(newArr);
         }
             break;
         case 'connect': {
-            const newArr = readFile(path.join(__dirname, 'test.txt'));
-            connect(newArr)
+            const newArr = store.getRemoteMach();
+            connectC(newArr)
         }
             break;
         case 'remote': {
             //@ts-ignore
-            const arrPort = Store.getPort();
-            remoteMachine(arrPort, data[0]);
+            const arrPort = store.getPort();
+            remoteMachineC(arrPort, data[0]);
         }
             break;
         case 'tunnel': {
-            tunnel(data[0], data[1]);
+            tunnelC(data[0], data[1]);
         }
             break;
         default: {
-            Menu('active');
+            MenuC('active');
         }
     }
 }
 
-function activeT(arr) {
+function activeC(arr) {
     console.clear()
 
     console.log('/ --- active tunnel --- /')
@@ -69,16 +147,15 @@ id: | <PORT>   |   <USERNAME> |
 
         rl.question('[?]', (label) => {
             if (label === 'c') {
-                Menu('connect');
+                MenuC('connect');
             } else if (label[0] === 'd') {
-                let num = arr[label.split('d', label.length)[1]]
+                let num = +label.split('d', label.length)[1]
 
                 if (num <= arr.length - 1) {
-                    child.execSync(`ps -lef | grep ssh | grep ${arr[num]} | awk "{print \\$2}" | xargs kill`)
-
+                    // child.execSync(`ps -lef | grep ssh | grep localhost:5500 | awk "{print \\$2}" | xargs kill`)
                 }
             } else {
-                activeT(arr);
+                activeC(arr);
             }
         })
     } else {
@@ -86,15 +163,15 @@ id: | <PORT>   |   <USERNAME> |
 
         rl.question('[c]', (label) => {
             if (label === 'c') {
-                Menu('connect');
+                MenuC('connect');
             } else {
-                activeT(arr);
+                activeC(arr);
             }
         })
     }
 }
 
-function connect(arr) {
+function connectC(arr) {
     console.clear()
 
     console.table(arr);
@@ -102,7 +179,7 @@ function connect(arr) {
     rl.question('[num]', (number) => {
 
         if (number === 'c') {
-            Menu('active');
+            MenuC('active');
         } else {
             if (number <= arr.length - 1) {
                 try {
@@ -113,21 +190,21 @@ function connect(arr) {
                         password: arr[number].password
                     }
 
-                    fn(obj)
+                    fnC(obj)
                 } catch (e) {
                     console.log('((((9');
-                    setTimeout(() => Menu('connect'), 2000)
+                    setTimeout(() => MenuC('connect'), 2000)
                 }
 
             } else {
                 console.log('((((9');
-                setTimeout(() => Menu('connect'), 2000)
+                setTimeout(() => MenuC('connect'), 2000)
             }
         }
     })
 }
 
-function fn(obj) {
+function fnC(obj) {
     const conn = new Client();
 
     conn.on('ready', () => {
@@ -145,8 +222,8 @@ function fn(obj) {
                 console.log(data.toString());
 
                 //@ts-ignore
-                Store.upDateRemotePort(data);
-                Menu('remote', obj);
+                store.upDateRemotePort(data);
+                MenuC('remote', obj);
             });
 
             stream.on('close', () => conn.end());
@@ -156,11 +233,11 @@ function fn(obj) {
 
     conn.on('error', (data) => {
         console.log('ERROR CONNECT')
-        setTimeout(() => Menu('connect'), 2000)
+        setTimeout(() => MenuC('connect'), 2000)
     })
 }
 
-function remoteMachine(arrPort, obj) {
+function remoteMachineC(arrPort, obj) {
     console.clear()
 
     for (let key of arrPort) console.log(`[${key}]`)
@@ -174,14 +251,14 @@ function remoteMachine(arrPort, obj) {
         }
 
         if (val) {
-            Menu('tunnel', port, obj)
+            MenuC('tunnel', port, obj)
         } else {
-            remoteMachine(arrPort, obj);
+            remoteMachineC(arrPort, obj);
         }
     })
 }
 
-function tunnel(PORT, obj) {
+function tunnelC(PORT, obj) {
     const {host, port, username, password} = obj;
 
     console.clear()
@@ -189,7 +266,7 @@ function tunnel(PORT, obj) {
     console.log('Port\n')
     rl.question(`[${PORT}]: `, (newPort) => {
 
-        if (2999 < newPort && newPort > 10000) {
+        if (2999 < +newPort) {
             console.log(`ssh -L ${newPort}:localhost:${PORT} ${username}@${host}`);
 
 
@@ -197,41 +274,25 @@ function tunnel(PORT, obj) {
 
 
             childTunnel.stderr.on('data', (data) => {
-                console.log('works')
                 if (data.includes('cannot')) {
                     console.log(`\nWarning: The tunnel has not been forwarded, remove the connection on port ${port}\n`);
-                } else {
-                    //@ts-ignore
-                    Store.addActive({host: host, port: PORT, username: username, password: password});
-
-                    Menu('active');
                 }
             });
 
+            //@ts-ignore
+            store.addActive({host: host, port: newPort, username: username, password: password});
+
+            MenuC('active');
+
         } else {
             console.log('(((((9')
-            setTimeout(() => tunnel(PORT, obj), 2000)
+            setTimeout(() => tunnelC(PORT, obj), 2000)
         }
 
 
     })
 
 
-}
-
-function deleteTunnel(arr) {
-    console.clear()
-
-    const newArr = [];
-
-    for (let key of arr) newArr.push({port: key.port, username: key.username})
-
-    console.table(newArr);
-    console.log('<---num delete--->')
-    rl.question('[d]', (num) => {
-        if (num <= newArr.length - 1) {
-        }
-    })
 }
 
 function readFile(file) {
@@ -247,7 +308,7 @@ function readFile(file) {
             data.push({host: idx[0], port: idx[1], username: idx[2], password: idx[3]})
         }
     }
-    return data;
+    store.addRemotes(data);
 }
 
-Menu()
+// MenuC()

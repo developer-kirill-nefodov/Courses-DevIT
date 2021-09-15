@@ -1,23 +1,37 @@
-const net = require('net');
-const s = new net.Socket();
 const readline = require('readline');
+
+const net = require('net');
+const client = new net.Socket();
+
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
-console.log(123)
 
-rl.question('enter some text', (answer) => {
+client.setEncoding('utf8');
 
-  s.write(answer);
-  // s.end();
+// Подключение к серверу
+client.connect ('./mySocket','localhost:3000', () => {
+
 });
 
-rl.on('line', (answer) => {
-  s.write(answer);
-  // s.end();
-})
+// Полученные данные отправляются серверу
+// process.stdin.on('data', function (data) {
+//   // console.log(data);
+//
+//
+//
+// });
 
-s.connect('./mysocket')
+
+client.on('data', (data) => {
+  console.log(data);
+  setTimeout(() => {client.write('123')}, 2000)
+});
+
+// При закрытии сервера
+client.on('close',function() {
+  console.log('connection is closed');
+});

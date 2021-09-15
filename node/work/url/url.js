@@ -194,7 +194,7 @@ console.log(myURL.hash);// #bar
 // const searchParams = new URLSearchParams('abc=123&query=first&query=second');
 // console.log(searchParams.entries());
 
-// urlSearchParams.forEach(fn[, thisArg])
+// urlSearchParams.forEach(fn.ts[, thisArg])
 
 // const myURL = new URL('https://example.org/?a=b&c=d');
 // myURL.searchParams.forEach((value, name, searchParams) => {

@@ -1,24 +1,36 @@
 //@ts-ignore
 class Store {
-    private activeT = [];
+    private active = [];
     private remoteMachine = [];
-    private port = [];
+    private portsArr = [];
 
     private tunnel = [];
+
+    private remoteObj = {}
+
+    private port = ''
 
     getTunnel() {
         return this.tunnel
     }
 
-    getRemote(): Array<any> {
+    getRemoteMach(): Array<any> {
         return this.remoteMachine
     }
 
     getActive(): Array<any> {
-        return this.activeT
+        return this.active
     }
 
-    getPort(): Array<any> {
+    getPortArr(): Array<any> {
+        return this.portsArr
+    }
+
+    getRemoteObj() {
+        return this.remoteObj
+    }
+
+    getPort() {
         return this.port
     }
 
@@ -38,12 +50,27 @@ class Store {
             arrPort.push(idx.slice(start + 1, finish))
         }
 
-        this.port = arrPort;
+        this.portsArr = arrPort;
+    }
+
+    addPort(port) {
+        this.port = port
+    }
+
+    addRemoteObj(obj) {
+        this.remoteObj = obj;
+    }
+
+    addRemotes(arr) {
+        this.remoteMachine = arr
     }
 
     addActive(obj): void {
-        this.activeT.push(obj)
+        this.active.push(obj)
     }
 }
 
-module.exports = new Store()
+// @ts-ignore
+const store = new Store()
+
+module.exports = store;

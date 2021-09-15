@@ -72,11 +72,11 @@
  */
 
 /**
- function a (fn){
-    if(typeof fn !== "function"){
+ function a (fn.ts){
+    if(typeof fn.ts !== "function"){
         throw ts Error('Not a function')
     }
-    const requiredArgLength = fn.length;
+    const requiredArgLength = fn.ts.length;
     const tmpArg = [];
     const c = (...arg) => {
         if(!arg.length && requiredArgLength > arg.length){
@@ -84,7 +84,7 @@
         }
         tmpArg.push(...arg);
         if(tmpArg.length === requiredArgLength){
-            return fn(...tmpArg);
+            return fn.ts(...tmpArg);
         }
         return c;
     }
