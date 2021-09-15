@@ -21,7 +21,7 @@ function Menu(page, ...data) {
         }
             break;
         case 'connect': {
-            const newArr = readFile('./test.txt');
+            const newArr = readFile();
             connect(newArr)
         }
             break;
@@ -219,4 +219,4 @@ function readFile(file) {
     return data;
 }
 
-Menu();
+// Menu();

@@ -10,7 +10,7 @@ const child = require('child_process');
 const {Client} = require('ssh2');
 
 //@ts-ignore
-const Store = require('./Store.js');
+const Store = require('./Store');
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -26,7 +26,7 @@ function Menu(page: string | void, ...data) {
         }
             break;
         case 'connect': {
-            const newArr = readFile('./test.txt');
+            const newArr = readFile(path.join(__dirname, 'test.txt'));
             connect(newArr)
         }
             break;
@@ -52,26 +52,32 @@ function activeT(arr) {
     console.log('/ --- active tunnel --- /')
     console.log
     (`\
-___________________________
-| <PORT>   |   <USERNAME> |
-___________________________\
+   ___________________________
+id: | <PORT>   |   <USERNAME> |
+   ___________________________\
 `)
 
     if (arr.length) {
         for (let key of arr) {
+            for (let idx = 0; idx < arr.length - 1; idx++) {
+                console.log(`[${idx}]| ${key.port}  |  ${key.username} |`)
+            }
             console.log(`| ${key.port}  |  ${key.username} |`)
         }
         console.log('<--- [c] new tunnel --->')
-        console.log('<--- [d + n] --->')
+        console.log('<--- [d+n] --->')
 
         rl.question('[?]', (label) => {
             if (label === 'c') {
                 Menu('connect');
-            }
-            else if (label === 'd') {
-                Menu('killTunnel', arr);
-            }
-            else {
+            } else if (label[0] === 'd') {
+                let num = arr[label.split('d', label.length)[1]]
+
+                if (num <= arr.length - 1) {
+                    child.execSync(`ps -lef | grep ssh | grep ${arr[num]} | awk "{print \\$2}" | xargs kill`)
+
+                }
+            } else {
                 activeT(arr);
             }
         })
@@ -81,8 +87,7 @@ ___________________________\
         rl.question('[c]', (label) => {
             if (label === 'c') {
                 Menu('connect');
-            }
-            else {
+            } else {
                 activeT(arr);
             }
         })
@@ -96,10 +101,10 @@ function connect(arr) {
 
     rl.question('[num]', (number) => {
 
-        if(number === 'c'){
+        if (number === 'c') {
             Menu('active');
         } else {
-            if(number <= arr.length - 1) {
+            if (number <= arr.length - 1) {
                 try {
                     let obj = {
                         host: arr[number].host,
@@ -109,7 +114,7 @@ function connect(arr) {
                     }
 
                     fn(obj)
-                }catch (e) {
+                } catch (e) {
                     console.log('((((9');
                     setTimeout(() => Menu('connect'), 2000)
                 }
@@ -184,29 +189,31 @@ function tunnel(PORT, obj) {
     console.log('Port\n')
     rl.question(`[${PORT}]: `, (newPort) => {
 
-        console.log(`ssh -L ${newPort}:localhost:${PORT} ${username}@${host}`);
+        if (2999 < newPort && newPort > 10000) {
+            console.log(`ssh -L ${newPort}:localhost:${PORT} ${username}@${host}`);
 
-        const childTunnel = child.spawn(`ssh -tt -NL ${newPort}:localhost:${PORT} ${username}@${host}`, {shell : true });
 
-        childTunnel.on('close', ()=> {
-            if(2999 < newPort && newPort > 10000) {
-                console.log('if true')
-                //@ts-ignore
-                Store.addActive({host: host, port: PORT, username: username, password: password});
+            const childTunnel = child.spawn(`ssh -tt -NL ${newPort}:localhost:${PORT} ${username}@${host}`, {shell: true});
 
-                Menu('active');
-            } else {
-                console.log('(((((9')
-                setTimeout(() => tunnel(PORT, obj), 2000)
-            }
-        })
 
-        childTunnel.stderr.on('data', (data) => {
-            console.log('works')
-            if (data.includes('cannot')) {
-                console.log(`\nWarning: The tunnel has not been forwarded, remove the connection on port ${port}\n`);
-            }
-        });
+            childTunnel.stderr.on('data', (data) => {
+                console.log('works')
+                if (data.includes('cannot')) {
+                    console.log(`\nWarning: The tunnel has not been forwarded, remove the connection on port ${port}\n`);
+                } else {
+                    //@ts-ignore
+                    Store.addActive({host: host, port: PORT, username: username, password: password});
+
+                    Menu('active');
+                }
+            });
+
+        } else {
+            console.log('(((((9')
+            setTimeout(() => tunnel(PORT, obj), 2000)
+        }
+
+
     })
 
 
@@ -222,7 +229,8 @@ function deleteTunnel(arr) {
     console.table(newArr);
     console.log('<---num delete--->')
     rl.question('[d]', (num) => {
-        if (num <= newArr.length - 1) {}
+        if (num <= newArr.length - 1) {
+        }
     })
 }
 
@@ -242,4 +250,4 @@ function readFile(file) {
     return data;
 }
 
-Menu();
+Menu()
