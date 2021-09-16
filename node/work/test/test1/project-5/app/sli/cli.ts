@@ -58,23 +58,29 @@ server.on('connection', (socket) => {
                 socket.write(JSON.stringify(newObj))
             }
             if (method === 'connect') {
-                socket.write(JSON.stringify(store.getRemoteMach()))
+                const newObj = {
+                    method: 'connect',
+                    label: store.getRemoteMach()
+                }
+                socket.write(JSON.stringify(newObj))
             }
             if (method === 'remote') {
-                socket.write(JSON.stringify(store.getPortArr()))
+                const newObj = {
+                    method: 'remote',
+                    label: store.getPortArr()
+                }
+                socket.write(JSON.stringify(newObj))
             }
             if (method === 'tunnel') {
                 const newObj = {
                     remote: store.getRemoteObj(),
                     port: store.getPort()
                 }
-
                 socket.write(JSON.stringify(newObj))
             }
         }).catch(() => {
             socket.write('err')
         })
-
 
         socket.on('close', () => console.log('socket close'));
     })
@@ -95,6 +101,8 @@ const rl = readline.createInterface({
     output: process.stdout,
 });
 
+
+
 function MenuC(page: string | void, ...data) {
     switch (page) {
         case 'active': {
@@ -111,11 +119,14 @@ function MenuC(page: string | void, ...data) {
         case 'remote': {
             //@ts-ignore
             const arrPort = store.getPort();
-            remoteMachineC(arrPort, data[0]);
+            const removeObj = store.getRemoteObj()
+            remoteMachineC(arrPort, removeObj);
         }
             break;
         case 'tunnel': {
-            tunnelC(data[0], data[1]);
+            const port = store.getPort()
+            const remote = store.getRemoteObj()
+            tunnelC(port, remote);
         }
             break;
         default: {
@@ -190,8 +201,38 @@ function connectC(arr) {
                         password: arr[number].password
                     }
 
-                    fnC(obj)
-                } catch (e) {
+                    const conn = new Client();
+
+                    conn.on('ready', () => {
+                        const ssh = fs.readFileSync(path.join(os.homedir(), '/.ssh/id_rsa.pub'));
+                        conn.exec(`echo '${ssh}' >> ~/.ssh/authorized_keys`, {}, (err, stream) => {
+                            if (err) throw err;
+
+                            stream.on('close', () => conn.end());
+                        });
+
+                        conn.exec("netstat -lpt4en | awk '{print $4, $NF}'", {}, (err, stream) => {
+                            if (err) console.error(err);
+
+                            stream.on('data', (data) => {
+                                console.log(data.toString());
+
+                                //@ts-ignore
+                                store.upDateRemotePort(data);
+                                store.addRemoteObj(obj)
+                                MenuC('remote');
+                            });
+
+                            stream.on('close', () => conn.end());
+                        });
+
+                    }).connect(obj);
+
+                    conn.on('error', () => {
+                        console.log('ERROR CONNECT')
+                        setTimeout(() => MenuC('connect'), 2000)
+                    })
+                } catch (err) {
                     console.log('((((9');
                     setTimeout(() => MenuC('connect'), 2000)
                 }
@@ -201,39 +242,6 @@ function connectC(arr) {
                 setTimeout(() => MenuC('connect'), 2000)
             }
         }
-    })
-}
-
-function fnC(obj) {
-    const conn = new Client();
-
-    conn.on('ready', () => {
-        const ssh = fs.readFileSync(path.join(os.homedir(), '/.ssh/id_rsa.pub'));
-        conn.exec(`echo '${ssh}' >> ~/.ssh/authorized_keys`, {}, (err, stream) => {
-            if (err) throw err;
-
-            stream.on('close', () => conn.end());
-        });
-
-        conn.exec("netstat -lpt4en | awk '{print $4, $NF}'", {}, (err, stream) => {
-            if (err) console.error(err);
-
-            stream.on('data', (data) => {
-                console.log(data.toString());
-
-                //@ts-ignore
-                store.upDateRemotePort(data);
-                MenuC('remote', obj);
-            });
-
-            stream.on('close', () => conn.end());
-        });
-
-    }).connect(obj);
-
-    conn.on('error', (data) => {
-        console.log('ERROR CONNECT')
-        setTimeout(() => MenuC('connect'), 2000)
     })
 }
 
@@ -251,7 +259,8 @@ function remoteMachineC(arrPort, obj) {
         }
 
         if (val) {
-            MenuC('tunnel', port, obj)
+            store.addPort(port);
+            MenuC('tunnel')
         } else {
             remoteMachineC(arrPort, obj);
         }
@@ -288,11 +297,7 @@ function tunnelC(PORT, obj) {
             console.log('(((((9')
             setTimeout(() => tunnelC(PORT, obj), 2000)
         }
-
-
     })
-
-
 }
 
 function readFile(file) {
@@ -310,5 +315,3 @@ function readFile(file) {
     }
     store.addRemotes(data);
 }
-
-// MenuC()

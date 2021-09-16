@@ -19,7 +19,7 @@ client.setEncoding('utf8');
 // app.set('port', (process.env.PORT || port))
 
 app.listen(port, ()=> {
-    console.log(`server works on port: ${app.get('port')}`)
+    console.log(`server works on port: ${port}`)
 })
 
 client.connect('../mySocket');
@@ -63,13 +63,14 @@ app.get('/active', (req, res) => {
                 a1: `new [c]`,
             });
         }
-
     })
 });
-//
-// app.get('/connect', (req, res) => {
-//     res.render('hbs/connect.hbs', {title: 'connect'});
-// });
+
+app.get('/connect', (req, res) => {
+
+
+    res.render('hbs/connect.hbs', {title: 'connect'});
+});
 //
 // app.get('/remote', (req, res) => {
 //     res.render('hbs/remote.hbs', {title: 'tunnels'});
@@ -78,6 +79,3 @@ app.get('/active', (req, res) => {
 // app.get('/tunnel', (req, res) => {
 //     res.render('hbs/tunnel.hbs', {title: 'add tunnel'});
 // });
-
-
-
