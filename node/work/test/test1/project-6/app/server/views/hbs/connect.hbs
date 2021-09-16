@@ -1,0 +1,20 @@
+<div class="connect">
+
+    {{#if content}}
+        <ul>
+            {{#each content}}
+                <p>{{@index}}: {{this}}</p>
+            {{else}}
+                <p class="empty">No content</p>
+            {{/each}}
+        </ul>
+
+        <h4>number <[n]></h4>
+    {{/if}}
+
+    <form action="/" method="post">
+        <input type="text" name="action" value="remote" readonly/>
+        <input type="text" name="label"/>
+        <input type="submit" value="Отправить"/>
+    </form>
+</div>
