@@ -1,20 +1,21 @@
-<div class="active">
+<div class="card border-success mb-3" style="max-width: 20rem;">
+    <div class="card-header"><h3 style="text-align: center">Active tunnel</h3></div>
+    <div class="card-body" style="display: grid; justify-content: center;">
 
-    {{#if content}}
-        <ul>
-            {{#each content}}
-                <p>{{@index}}: {{this}}</p>
-            {{else}}
-                <p class="empty">No content</p>
-            {{/each}}
-        </ul>
+        {{#if content}}
+            <div style="display: grid; justify-content: center">
+                {{#each content}}
+                    <p class="text-warning">{{@index}}: {{this.host}} {{this.username}} {{this.port}}</p>
+                {{/each}}
+            </div>
+            <a style="text-align: center">delete tunnel <[d+n]></a>
+        {{/if}}
 
-        <h4>delete tunnel <[d+n]></h4>
-    {{/if}}
-
-    <form action="/" method="post">
-        <input type="text" name="action" value="connect" readonly/>
-        <input type="text" name="label"/>
-        <input type="submit" value="Отправить"/>
-    </form>
+        <a style="text-align: center">new tunnel <[c]></a>
+        <form action="/" method="post" style="display: flex;align-items: center;justify-content: center">
+            <input type="text" name="action" style="display: none" value="active">
+            <input type="text" name="label">
+            <button type="submit" class="btn btn-outline-danger">Send</button>
+        </form>
+    </div>
 </div>

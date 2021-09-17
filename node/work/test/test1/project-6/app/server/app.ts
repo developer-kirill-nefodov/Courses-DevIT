@@ -14,13 +14,16 @@ const tasks: any = [];
 let count: number = 0;
 const urlencodedParser = express.urlencoded({extended: false});
 
-app.set('views', path.join(__dirname, './views'));
+app.set('views', path.join(__dirname, '/views'));
 app.set('views engine', 'hbs');
+app.use(express.static(path.join(__dirname, '/views/hbs')))
+
 client.setEncoding('utf8');
 
 app.listen(port, () => {
     console.log(`server works on port: ${port}`)
 })
+
 client.connect('../mySocket');
 
 
@@ -30,21 +33,25 @@ client.on('data', (data) => {
     //     throw new Error('ERROOORRR((( BAYBAY!!!')
     // }
 
-    let dataObj = JSON.parse(data.toString());
+    try {
+        let dataObj = JSON.parse(data.toString());
+        let task = tasks.filter((v: any) => v.id == dataObj.id)[0];
+        task?.cb(dataObj.data, dataObj.label, dataObj.action);
 
-    let task = tasks.filter((v: any) => v.id == dataObj.id)[0];
 
-    task?.cb(dataObj.data, dataObj.label);
+    } catch (e) {
+
+    }
+
 });
 
 app.post('/', urlencodedParser, (req, res) => {
-
     const task: Task = {
         id: count++,
         action: req.body.action,
         label: req.body.label,
-        cb: (data: null | string[], label: string) => {
-            res.render(`hbs/${req.body.action}.hbs`, {
+        cb: (data: null | string[], label: string, action: string) => {
+            res.render(`hbs/${action}.hbs`, {
                 content: data,
                 label: label
             });
@@ -56,5 +63,5 @@ app.post('/', urlencodedParser, (req, res) => {
 })
 
 app.get('/', ((req, res) => {
-    res.render('hbs/active.hbs');
+    res.render(`hbs/start.hbs`);
 }))

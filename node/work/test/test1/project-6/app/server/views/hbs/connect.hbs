@@ -1,20 +1,20 @@
-<div class="connect">
+<div class="card border-success mb-3" style="max-width: 20rem;">
+    <div class="card-header"><h3 style="text-align: center">Connect</h3></div>
+    <div class="card-body" style="display: grid; justify-content: center;">
 
-    {{#if content}}
-        <ul>
-            {{#each content}}
-                <p>{{@index}}: {{this}}</p>
-            {{else}}
-                <p class="empty">No content</p>
-            {{/each}}
-        </ul>
+        {{#if content}}
+            <div style="display: grid; justify-content: center">
+                {{#each content}}
+                    <p class="text-warning">{{@index}}: {{this.host}} {{this.port}} {{this.username}} {{this.password}}</p>
+                {{/each}}
+            </div>
+        {{/if}}
+        <p style="text-align: center">number <[n]></p>
 
-        <h4>number <[n]></h4>
-    {{/if}}
-
-    <form action="/" method="post">
-        <input type="text" name="action" value="remote" readonly/>
-        <input type="text" name="label"/>
-        <input type="submit" value="Отправить"/>
-    </form>
+        <form action="/" method="post" style="display: flex;align-items: center;justify-content: center">
+            <label><input type="text" name="action" style="display: none" value="connect" /></label>
+            <label><input type="text" name="label" /></label>
+            <button type="submit" class="btn btn-outline-danger">Send</button>
+        </form>
+    </div>
 </div>

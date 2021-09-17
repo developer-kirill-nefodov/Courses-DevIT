@@ -25,35 +25,49 @@ server.on('connection', (socket) => {
 
     socket.on('data', (data: Buffer) => {
         const ts: Task = JSON.parse(data.toString())
-
         tasks.push(ts);
-
         const {action, label} = ts;
 
         new Promise((resolve) => {
-            const res = MenuF(action, label)
+            if(action === "start") {
 
-            if (res === 'err') {
-                throw new Error('error')
+            } else {
+                const res = MenuF(action, label);
+                if (res === 'err') {
+                    throw new Error('error');
+                }
             }
 
             resolve(action);
         }).then((data) => {
+            if(data === "start") {
+                    tasks[tasks.length - 1].data = store.getActive();
+                    tasks[tasks.length - 1].action = 'active';
+
+                    socket.write(JSON.stringify(tasks[tasks.length - 1]))
+            }
             if (data === 'active') {
-                tasks[tasks.length - 1].data = store.getActive();
+                tasks[tasks.length - 1].data = store.getRemoteMachine();
+                tasks[tasks.length - 1].action = 'connect';
+
                 socket.write(JSON.stringify(tasks[tasks.length - 1]))
             }
             if (data === 'connect') {
-                tasks[tasks.length - 1].data = store.getRemoteMachine();
+                tasks[tasks.length - 1].data = store.getPortMachine();
+                tasks[tasks.length - 1].action = 'remote';
+
                 socket.write(JSON.stringify(tasks[tasks.length - 1]))
             }
             if (data === 'remote') {
-                tasks[tasks.length - 1].data = store.getPortMachine();
+                tasks[tasks.length - 1].data = store.getRemoteData();
+                tasks[tasks.length - 1].label = store.getPort();
+                tasks[tasks.length - 1].action = 'tunnel';
+
                 socket.write(JSON.stringify(tasks[tasks.length - 1]))
             }
             if (data === 'tunnel') {
-                tasks[tasks.length - 1].data = store.getRemoteData();
-                tasks[tasks.length - 1].label = store.getPort();
+                tasks[tasks.length - 1].data = store.getActive();
+                tasks[tasks.length - 1].action = 'active';
 
                 socket.write(JSON.stringify(tasks[tasks.length - 1]))
             }
@@ -291,4 +305,4 @@ function readFile(file: string) {
     store.addRemoteMachine(data)
 }
 
-// Menu()
+Menu()
