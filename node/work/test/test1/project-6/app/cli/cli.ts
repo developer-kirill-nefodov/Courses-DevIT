@@ -26,11 +26,11 @@ server.on('connection', (socket) => {
     socket.on('data', (data: Buffer) => {
         const ts: Task = JSON.parse(data.toString())
 
-        tasks.push(ts)
+        tasks.push(ts);
+
         const {action, label} = ts;
 
         new Promise((resolve) => {
-
             const res = MenuF(action, label)
 
             if (res === 'err') {
@@ -48,7 +48,7 @@ server.on('connection', (socket) => {
                 socket.write(JSON.stringify(tasks[tasks.length - 1]))
             }
             if (data === 'remote') {
-                tasks[tasks.length - 1].data = store.getRemoteData();
+                tasks[tasks.length - 1].data = store.getPortMachine();
                 socket.write(JSON.stringify(tasks[tasks.length - 1]))
             }
             if (data === 'tunnel') {

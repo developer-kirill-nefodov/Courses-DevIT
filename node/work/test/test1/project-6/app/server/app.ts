@@ -1,11 +1,11 @@
 import net from "net";
 
 import path from "path";
-import express from 'express';
+import express from "express";
 
 import {Task} from "../cli/Store";
 
-const {port} = require('../config.json');
+const {port} = require("../config.json");
 
 const app = express();
 const client = new net.Socket();
@@ -34,7 +34,7 @@ client.on('data', (data) => {
 
     let task = tasks.filter((v: any) => v.id == dataObj.id)[0];
 
-    task?.cb(dataObj.data);
+    task?.cb(dataObj.data, dataObj.label);
 });
 
 app.post('/', urlencodedParser, (req, res) => {
@@ -43,9 +43,10 @@ app.post('/', urlencodedParser, (req, res) => {
         id: count++,
         action: req.body.action,
         label: req.body.label,
-        cb: (data: null | string[]) => {
+        cb: (data: null | string[], label: string) => {
             res.render(`hbs/${req.body.action}.hbs`, {
-                content: data
+                content: data,
+                label: label
             });
         }
     }
@@ -55,5 +56,5 @@ app.post('/', urlencodedParser, (req, res) => {
 })
 
 app.get('/', ((req, res) => {
-    res.render('hbs/start.hbs');
+    res.render('hbs/active.hbs');
 }))
