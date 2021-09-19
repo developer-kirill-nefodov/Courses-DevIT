@@ -9,15 +9,11 @@ function quest() {
 }
 
 function getQuest() {
-    // if (quests.length > 0) {
-        return quest()
-    // } else {
-    //     return null
-    // }
+    if (questions.length > 0) {
+        return quest();
+    } else {
+        return {quest: 'Пусто', trueAnswer: 'Нету'}
+    }
 }
 
-function add() {
-    document.getElementById('quiz').innerHTML = getQuest().quest
-}
-
-document.addEventListener('click', add)
+module.exports = getQuest;

@@ -11,24 +11,52 @@
 </head>
 <body>
 
-<div class="card border-info mb-3" style="max-width: 20rem;">
-    <div class="card-header">QUIZ</div>
-    <div class="card-body">
-        <h4 class="card-title" style="text-align: center">Question</h4>
-        <p class="card-text" id="quiz"></p>
+<div style="display: flex;justify-content: center;">
+    <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+        <div class="card-header">MESSAGE</div>
+        <div class="card-body">
+            <p class="card-text" id="userMess"></p>
+        </div>
+    </div>
+</div>
+<div class="GLOBAL">
+    <div class="global-1">
+        <div class="card border-info mb-3" style="max-width: 20rem;">
+            <div class="card-header">QUIZ</div>
+            <div class="card-body">
+                <h4 class="card-title" style="text-align: center">Question</h4>
+                <div class="card-text" id="quiz"></div>
+            </div>
+            <span class="badge bg-primary rounded-pill" style="height: 100px" id="time"></span>
+        </div>
+    </div>
+    <!--<><><><><><><><><><><><><><><><><>form<><><><><><><><><><><><><><><><><><><><><><><><><><><><>-->
+    <div class="global-2">
+        <form name="publish" style="display: flex">
+            <div class="form-group has-success">
+                <label>
+                    <input type="text" class="form-control is-valid" name="message" id="mess"/>
+                </label>
+            </div>
+            <button type="submit" class="btn btn-outline-info">Send</button>
+        </form>
+    </div>
+    <!--<><><><><><><><><><><><><><><><><>form<><><><><><><><><><><><><><><><><><><><><><><><><><><><>-->
+
+    <div class="global-3">
+        <ul>
+            <li>
+                <span class="list-group-item d-flex justify-content-between align-items-center" id="user"></span>
+                <span class="badge bg-primary rounded-pill" style="height: 21px" id="answer"></span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="global-3">
+        <ul id="users"></ul>
     </div>
 </div>
 
-<form name="publish" style="display: flex">
-    <div class="form-group has-success">
-        <label>
-            <input type="text" class="form-control is-valid" name="message">
-        </label>
-    </div>
-    <button type="submit" class="btn btn-outline-info">Send</button>
-</form>
-
-<button id="click">ok</button>
-<script type="module" src="../questions/quest.js"></script>
+<script type="module" src="index.js"></script>
 </body>
 </html>
