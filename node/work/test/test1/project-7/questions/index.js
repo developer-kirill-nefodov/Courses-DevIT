@@ -1,83 +1,103 @@
 const questions = [
     {
         quest: "В каком году Титаник утонул в Атлантическом океане 15 апреля во время своего первого плавания из Саутгемптона?",
-        trueAnswer: "1912"
+        trueAnswer: "1912",
+        complexity: 0
     },
     {
         quest: "В каком году был выпущен первый грузовик Tonka - 1945, 1947 или 1949?",
-        trueAnswer: "1947"
+        trueAnswer: "1947",
+        complexity: 0
     },
     {
         quest: "Как называется крупнейшая технологическая компания в Южной Корее?",
-        trueAnswer: "samsung"
+        trueAnswer: "samsung",
+        complexity: 0
     },
     {
         quest: "Какой металл был открыт Гансом Кристианом Эрстедом в 1825 году?",
-        trueAnswer: "алюминий"
+        trueAnswer: "алюминий",
+        complexity: 0
     },
     {
         quest: "Сколько игроков в команде по водному поло?",
-        trueAnswer: "7"
+        trueAnswer: "7",
+        complexity: 0
     },
     {
         quest: "Какая страна выиграла чемпионат мира 1982 года в Испании, победив Западную Германию со счетом 3: 1?",
-        trueAnswer: "италия"
+        trueAnswer: "италия",
+        complexity: 0
     },
     {
         quest: "Какую спортивную игру Джеймс Нейсмит изобрел в 1891 году?",
-        trueAnswer: "баскетбол"
+        trueAnswer: "баскетбол",
+        complexity: 0
     },
     {
         quest: "Какую спортивную игру Джеймс Нейсмит изобрел в 1891 году?",
-        trueAnswer: "11"
+        trueAnswer: "11",
+        complexity: 0
     },
     {
         quest: "Сколько игроков в олимпийской команде по керлингу?",
-        trueAnswer: "4"
+        trueAnswer: "4",
+        complexity: 0
     },
     {
         quest: "Канадский Коннор МакДэвид - восходящая звезда в каком виде спорта?",
-        trueAnswer: "хоккей"
+        trueAnswer: "хоккей",
+        complexity: 0
     },
     {
         quest: "Сколько сердец у Осьминога?",
-        trueAnswer: "3"
+        trueAnswer: "3",
+        complexity: 0
     },
     {
         quest: "В каком году продукт WD40 был изобретен химиком Нормом Ларсеном?",
-        trueAnswer: "1953"
+        trueAnswer: "1953",
+        complexity: 0
     },
     {
         quest: "Какая самая большая молекула является частью человеческого тела?",
-        trueAnswer: "хромосома"
+        trueAnswer: "хромосома",
+        complexity: 0
     },
     {
         quest: "Какой процент массы солнечной системы находится на Солнце с точностью до 1 процента?",
-        trueAnswer: "99"
+        trueAnswer: "99",
+        complexity: 0
     },
     {
         quest: "В каком году «Битлз» впервые отправились в США?",
-        trueAnswer: "1964"
+        trueAnswer: "1964",
+        complexity: 0
     },
     {
         quest: "В каком году «Арсенал» переехал на стадион «Эмирейтс» из Хайбери?",
-        trueAnswer: "2006"
+        trueAnswer: "2006",
+        complexity: 0
     },
     {
         quest: "Сколько подсолнухов было в третьей версии картины Ван Гога «Подсолнухи»?",
-        trueAnswer: "12"
+        trueAnswer: "12",
+        complexity: 0
     },
     {
         quest: "Мастера монет Лорда Петра Баелиша также знали под каким именем?",
-        trueAnswer: "мизинец"
+        trueAnswer: "мизинец",
+        complexity: 0
     },
     {
         quest: "Как зовут Лютоволка Джона Сноу?",
-        trueAnswer: "призрак"
+        trueAnswer: "призрак",
+        complexity: 0
     },
     {
         quest: "Правда или ложь: актриса Холли Берри появилась в фильме Бонда 2002 года «Ещё один день», сыграв персонажа Джинкс?",
-        trueAnswer: "правда"
+        trueAnswer: "правда",
+        complexity: 0
     },
 ]
 

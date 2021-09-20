@@ -1,55 +1,44 @@
-let socket = new WebSocket('ws://localhost:9999/ws');
+const socket = new WebSocket('ws://localhost:9999/ws');
+let timerId = null;
 
-let result = null, userData = {username: 'user', trueAnswer: 0, idx: 0};
+const userData = {username: 'user', trueAnswer: 0, idx: 0};
 
 document.forms["publish"].onsubmit = function () {
     let outgoingMessage = this.message.value;
 
-    if (result) {
-        if (outgoingMessage === 'help') {
-            messageUser(result);
-        }
+    socket.send(JSON.stringify({data: outgoingMessage}));
 
-        if (result === outgoingMessage) {
-            socket.send(JSON.stringify({data: outgoingMessage, method: '1'}));
-        } else {
-            document.getElementById('userMess').innerText = 'Этот ответ не верный';
-        }
-    } else {
-        socket.send(JSON.stringify({data: outgoingMessage, method: '0'}));
-        document.getElementById('mess').value = "";
-    }
-
+    document.getElementById('mess').value = "";
     return false;
 };
 
 socket.onmessage = (event) => {
     const mess = JSON.parse(event.data);
-
     const {method, userArr, data} = mess;
 
     switch (method) {
-        case 'creatUser': {
+        case 'createUser': {
             userData.username = data.mess;
             userData.trueAnswer = data.trueAnswer;
             userData.idx = data.idx;
-            User();
         }
             break;
         case 'upDateUsers': {
             upDateUsers(userArr);
+            User();
         }
             break;
         case 'time': {
+            if (timerId) {
+                clearInterval(timerId);
+            }
+
             upDateTime(data.time)
         }
             break;
         case 'question': {
-            result = data.trueAnswer;
-            showQuestion(data);
-            upDateTime(data.time, 'quiz');
+            showQuestion(data.mess);
         }
-
             break;
         case 'messageUser': {
             messageUser(data.mess);
@@ -60,6 +49,9 @@ socket.onmessage = (event) => {
         }
             break;
         case 'wining': {
+            if (timerId) {
+                clearInterval(timerId);
+            }
             messageUser(data.mess);
             socket.close();
         }
@@ -68,13 +60,13 @@ socket.onmessage = (event) => {
 
 
 function User() {
-    document.getElementById('user').innerText = `you (${userData.username})`;
-    document.getElementById('answer').innerText = userData.trueAnswer;
+    document.getElementById(`user_${userData.idx}`).innerText = `you (${userData.username})`;
+    document.getElementById(`answer_${userData.idx}`).innerText = userData.trueAnswer;
 }
 
 function upUser() {
     userData.trueAnswer++;
-    document.getElementById('answer').innerText = userData.trueAnswer;
+    document.getElementById(`answer_${userData.idx}`).innerText = userData.trueAnswer;
 }
 
 function upDateUsers(arr) {
@@ -82,43 +74,30 @@ function upDateUsers(arr) {
     for (let key of arr) {
         document.getElementById('users').innerHTML +=
             `<li>
-                <span class="list-group-item d-flex justify-content-between align-items-center">${key.username}</span>
-                <span class="badge bg-primary rounded-pill" style="height: 21px">${key.trueAnswer}</span>
+                <span class="list-group-item d-flex justify-content-between align-items-center" id="user_${key.idx}">${key.username}</span>
+                <span class="badge bg-primary rounded-pill" style="height: 21px" id="answer_${key.idx}">${key.trueAnswer}</span>
             </li>`
     }
 }
 
 function showQuestion(data) {
-    result = data.mess.trueAnswer;
-    document.getElementById('quiz').innerHTML = data.mess.quest;
+    document.getElementById('quiz').innerHTML = data;
 }
 
-function upDateTime(time, idx = null) {
-    if (!idx) {
-        let count = time;
-        const int = setInterval(() => {
-            document.getElementById('time').innerText = count;
+function upDateTime(time) {
+    let count = time - Math.round(new Date().getTime() / 1000);
 
-            if (count <= 0) {
-                clearInterval(int);
-                socket.send(JSON.stringify({method: 'start'}));
-            }
-            count--;
-        }, 1000)
-    } else {
-        let count1 = time;
-        const int = setInterval(() => {
-            document.getElementById('time').innerText = count1;
+    const int = setInterval(() => {
+        document.getElementById('time').innerText = String(count);
 
-            if (count1 <= 0) {
-                document.getElementById('quiz').innerHTML = `Время кончилось(`;
-                clearInterval(int);
-                socket.send(JSON.stringify({data: '', method: 'newQuest'}));
-            }
-            count1--;
-        }, 1000)
+        if (count <= 0) {
+            clearInterval(int);
+            document.getElementById('time').innerText = '0';
+        }
+        count--;
+    }, 1000);
 
-    }
+    timerId = int;
 }
 
 function messageUser(mess) {
