@@ -22,10 +22,11 @@ function methods(method, arr = [], ...data) {
         }
         case 'createUser': {
             DATA.data = {mess: data[0], trueAnswer: 0, idx: data[1]}
-            return DATA
+            return DATA;
         }
         case 'wining': {
             DATA.data = {mess: data[0]}
+            return DATA;
         }
     }
 }

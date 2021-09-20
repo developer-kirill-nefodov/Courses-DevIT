@@ -10,40 +10,46 @@
     <title>QUIZ</title>
 </head>
 <body>
-
-<div style="display: flex;justify-content: center;">
-    <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
-        <div class="card-header">MESSAGE</div>
-        <div class="card-body">
-            <p class="card-text" id="userMess"></p>
-        </div>
-    </div>
-</div>
 <div class="GLOBAL">
-    <div class="global-1">
-        <div class="card border-info mb-3" style="max-width: 20rem;">
-            <div class="card-header">QUIZ</div>
-            <div class="card-body">
-                <h4 class="card-title" style="text-align: center">Question</h4>
-                <div class="card-text" id="quiz"></div>
+
+    <div class="block1">
+        <div class="blockQuiz">
+            <div class="card border-info mb-3" style="max-width: 20rem;">
+                <div class="card-header">QUIZ</div>
+                <div class="card-body">
+                    <h4 class="card-title" style="text-align: center">Question</h4>
+                    <div class="card-text" id="quiz"></div>
+                </div>
             </div>
-            <span class="badge bg-primary rounded-pill" style="height: 100px" id="time"></span>
+        </div>
+
+        <div class="blockForm">
+            <form name="publish" style="display: flex">
+                <div class="form-group has-success">
+                    <label>
+                        <input type="text" class="form-control is-valid" name="message" id="mess"/>
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-outline-info">Send</button>
+            </form>
         </div>
     </div>
-    <!--<><><><><><><><><><><><><><><><><>form<><><><><><><><><><><><><><><><><><><><><><><><><><><><>-->
-    <div class="global-2">
-        <form name="publish" style="display: flex">
-            <div class="form-group has-success">
-                <label>
-                    <input type="text" class="form-control is-valid" name="message" id="mess"/>
-                </label>
+
+    <div class="block2">
+        <div class="blockMess">
+            <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+                <div class="card-header" style="display: flex; justify-content: flex-end;align-items: center;">MESSAGE
+                    <span class="time" id="time">0</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-text" id="userMess"></p>
+                </div>
             </div>
-            <button type="submit" class="btn btn-outline-info">Send</button>
-        </form>
-    </div>
-    <!--<><><><><><><><><><><><><><><><><>form<><><><><><><><><><><><><><><><><><><><><><><><><><><><>-->
-    <div class="global-3">
-        <ul id="users"></ul>
+        </div>
+
+        <div class="blockUser">
+            <ul id="users"></ul>
+        </div>
     </div>
 </div>
 

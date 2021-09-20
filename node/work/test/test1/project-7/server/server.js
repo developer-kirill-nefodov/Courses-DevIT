@@ -36,11 +36,17 @@ wss.on('connection', (ws) => {
 
                     for (let key of store.getClients()) {
                         if (key.trueAnswer === 5) {
+                            store.upDateQuest();
                             messageCli(methods('wining', [],
                                 `Победил ${key.username}!!!...  Дал ответов [${key.trueAnswer}]`));
                         }
                     }
-                    newQuest();
+
+                    if(store.getQuest()) {
+                        newQuest();
+                    } else {
+                        clearInterval(timing);
+                    }
 
                 } else if (data === store.getAnswer()) {
                     ws.send(JSON.stringify(methods('messageUser', [],
@@ -88,44 +94,47 @@ function messageCli(data) {
 
 function newQuest() {
     if (timing) {
-        clearTimeout(timing)
+        clearTimeout(timing);
     }
 
-    const {quest, trueAnswer, complexity} = getQuest();
-    store.upDateAnswer(trueAnswer);
+    if (store.getQuest()) {
+        const {quest, trueAnswer, complexity} = getQuest();
+        store.upDateAnswer(trueAnswer);
 
-    if (!store.getRes()) {
-        store.upDateRes();
-    }
+        if (!store.getRes()) {
+            store.upDateRes();
+        }
 
-    if (!quest) {
-        messageCli(methods('messageUser', [], 'Вопросы закончились идёт подсчет балов...'));
+        if (!quest) {
+            messageCli(methods('messageUser', [], 'Вопросы закончились идёт подсчет балов...'));
 
-        setTimeout(() => {
-            let maxNumber = (a, b) => a > b ? a : b;
+            setTimeout(() => {
+                let maxNumber = (a, b) => a > b ? a : b;
 
-            const max = store.getClients().map(n => n.trueAnswer).reduce(maxNumber);
-            const idx = store.getClients().map(a => a.trueAnswer).indexOf(max);
-            const {username, trueAnswer} = store.getClients()[idx];
+                const max = store.getClients().map(n => n.trueAnswer).reduce(maxNumber);
+                const idx = store.getClients().map(a => a.trueAnswer).indexOf(max);
+                const {username, trueAnswer} = store.getClients()[idx];
 
-            messageCli(methods('wining', [], `Победил ${username}!!!...  Дал ответов [${trueAnswer}]`));
-        }, 3000)
-    } else {
-        messageCli(methods('messageUser', [],
-            'Новый вопрос через 5 секунд... приготовьтесь'));
-
-        messageCli(methods('time', [], 5 + complexity));
-
-        setTimeout(() => {
+                messageCli(methods('wining', [], `Победил ${username}!!!...  Дал ответов [${trueAnswer}]`));
+            }, 3000)
+        } else {
             messageCli(methods('messageUser', [],
-                'Только один из вас может забрать этот бал'));
+                'Новый вопрос через 5 секунд... приготовьтесь'));
 
-            messageCli(methods('question', [], quest));
-            messageCli(methods('time', [], 30 + complexity));
+            messageCli(methods('time', [], 5 + complexity));
 
-            timing = setTimeout(() => {
-                newQuest();
-            }, 30000 + complexity * 1000);
-        }, 6000)
+            setTimeout(() => {
+                messageCli(methods('messageUser', [],
+                    'Только один из вас может победит'));
+
+                messageCli(methods('question', [], quest));
+                messageCli(methods('time', [], 30 + complexity));
+
+                timing = setTimeout(() => {
+                    newQuest();
+                }, 30000 + complexity * 1000);
+            }, 6000)
+        }
     }
+
 }

@@ -34,6 +34,14 @@ class Store {
     getMinClient() {
         return this.minClient
     }
+
+    question = true;
+    upDateQuest() {
+        this.question = !this.question;
+    }
+    getQuest() {
+        return this.question
+    }
 }
 
 const store = new Store();

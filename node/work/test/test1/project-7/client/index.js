@@ -58,7 +58,6 @@ socket.onmessage = (event) => {
     }
 }
 
-
 function User() {
     document.getElementById(`user_${userData.idx}`).innerText = `you (${userData.username})`;
     document.getElementById(`answer_${userData.idx}`).innerText = userData.trueAnswer;
