@@ -8,39 +8,33 @@ const getQuest = require('../questions/quest')
 let result = true;
 
 const storeUser = [];
+const countClient = 2;
 
 const methods = {
-    start: false,
+    start: true,
+    quest: true,
+    result: true,
 
     message: {
         0: {method: 'messageUser', userArr: [], data: {mess: 'Ведиете ваше имя'}},
-        1: {method: 'messageUser', userArr: [], data: {mess: `Ждём ${5 - storeUser.length} пользователей для игры`}},
-        2: {method: 'messageUser', userArr: [], data: {mess: `Ждите ${5 - storeUser.length} пользователей`}},
+        1: {
+            method: 'messageUser',
+            userArr: [],
+            data: {mess: `Ждём ${countClient - storeUser.length} пользователей для игры`}
+        },
+        2: {method: 'messageUser', userArr: [], data: {mess: `Ждите ${countClient - storeUser.length} пользователей`}},
         3: {method: 'messageUser', userArr: [], data: {mess: `Игра начнёться через 5 секунд... приготовьтесь`}},
         4: {method: 'messageUser', userArr: [], data: {mess: ``}},
-        5: {method: 'messageUser', userArr: [], data: {mess: `Вы опоздали с правильным ответом(((`}}
+        5: {method: 'messageUser', userArr: [], data: {mess: `Вы опоздали с правильным ответом(((`}},
+        6: {method: 'messageUser', userArr: [], data: {mess: `Новый вопрос через 5 секунд... приготовьтесь`}}
     },
 
-    update: {
-        0: {method: 'upDateUsers', userArr: storeUser, data: {}}
-    },
-
-    question: {
-        0: {method: 'question', userArr: [], data: {mess: '', time: 30}},
-    },
-
-    time: {
-        0: {method: 'time', userArr: [], data: {mess: '', time: 5}}
-    },
-
-    create: {
-        0: {method: 'creatUser', userArr: [], data: {mess: '', trueAnswer: 0, idx: storeUser.length}}
-    },
-
-    wining: {
-        0: {method: 'win', userArr: storeUser, data: {mess: '', trueAnswer: 0}}
-    }
-
+    answer: {0: {method: 'upUser', userArr: [], data: {}}},
+    update: {0: {method: 'upDateUsers', userArr: storeUser, data: {}}},
+    question: {0: {method: 'question', userArr: [], data: {mess: '', time: 30}},},
+    time: {0: {method: 'time', userArr: [], data: {mess: '', time: 5}}},
+    create: {0: {method: 'creatUser', userArr: [], data: {mess: '', trueAnswer: 0, idx: storeUser.length}}},
+    wining: {0: {method: 'wining', userArr: storeUser, data: {mess: '', trueAnswer: 0}}}
 }
 
 wss.on('connection', (ws) => {
@@ -52,43 +46,39 @@ wss.on('connection', (ws) => {
         const {data, method} = JSON.parse(message.toString());
 
         if (ws.name) {
-            if (storeUser.length === 2) {
-                if (method === 'start' && !methods.start) {
-                    methods.start = true;
+            if (storeUser.length === countClient) {
+
+                if (method === 'start' && methods.start) {
+                    methods.start = false;
                     methods.question[0].data.mess = getQuest()
                     messageCli(methods.question[0]);
                 }
 
-                if (method === '1' && result) {
+                if (method === 'newQuest' && methods.quest) {
+                    newQuest();
+                }
+
+                if (method === '1' && methods.result) {
                     for (let key of storeUser) {
                         if (key.username === ws.name) {
-                            result = false;
+                            methods.result = false;
+                            ws.send(JSON.stringify(methods.answer[0]))
                             key.trueAnswer++;
                             methods.message[4].data.mess = `Пользователь ${key.username} дал правельный ответ!!!`;
                             messageCli(methods.message[4]);
+                            messageCli(methods.update[0]);
                         }
                     }
 
-                    setTimeout(() => {
-                        for (let key of storeUser) {
-                            if (key.trueAnswer === 5) {
-                                methods.wining[0].data.mess = key.username;
-                                methods.wining[0].data.trueAnswer = key.trueAnswer;
-                                messageCli(methods.wining[0]);
-                            }
+                    for (let key of storeUser) {
+                        if (key.trueAnswer >= 5) {
+                            methods.wining[0].data.mess = `Победил ${key.username}!!!...  дал ответов [${key.trueAnswer}]`;
+                            messageCli(methods.wining[0]);
                         }
+                    }
 
-                        messageCli(methods.update[0]);
-                        methods.question[0].data.mess = getQuest();
-                        messageCli(methods.question[0]);
-                        result = true;
-                    }, 4000)
-                } else {
+                } else if (method === '1') {
                     ws.send(JSON.stringify(methods.message[5]));
-                    setTimeout(() => {
-                        methods.question[0].data.mess = getQuest()
-                        messageCli(methods.question[0]);
-                    }, 4000)
                 }
 
             } else {
@@ -106,7 +96,7 @@ wss.on('connection', (ws) => {
             messageCli(methods.update[0]);
             messageCli(methods.message[1]);
 
-            if (storeUser.length === 2) {
+            if (storeUser.length === countClient) {
                 messageCli(methods.message[3]);
                 messageCli(methods.time[0]);
             }
@@ -122,9 +112,22 @@ wss.on('connection', (ws) => {
     });
 })
 
-
 function messageCli(data) {
     for (let client of clients) {
         client.send(JSON.stringify(data))
+    }
+}
+
+function newQuest() {
+    if (methods.quest) {
+        methods.quest = false;
+        messageCli(methods.message[6]);
+        messageCli(methods.time[0]);
+        setTimeout(() => {
+            methods.question[0].data.mess = getQuest();
+            messageCli(methods.question[0]);
+            methods.quest = true;
+            methods.result = true;
+        }, 5000)
     }
 }

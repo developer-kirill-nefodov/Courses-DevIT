@@ -6,6 +6,10 @@ document.forms["publish"].onsubmit = function () {
     let outgoingMessage = this.message.value;
 
     if (result) {
+        if (outgoingMessage === 'help') {
+            messageUser(result);
+        }
+
         if (result === outgoingMessage) {
             socket.send(JSON.stringify({data: outgoingMessage, method: '1'}));
         } else {
@@ -33,7 +37,6 @@ socket.onmessage = (event) => {
         }
             break;
         case 'upDateUsers': {
-            console.log(mess)
             upDateUsers(userArr);
         }
             break;
@@ -52,9 +55,13 @@ socket.onmessage = (event) => {
             messageUser(data.mess);
         }
             break;
+        case 'upUser': {
+            upUser();
+        }
+            break;
         case 'wining': {
             messageUser(data.mess);
-            socket.close()
+            socket.close();
         }
     }
 }
@@ -66,6 +73,7 @@ function User() {
 }
 
 function upUser() {
+    userData.trueAnswer++;
     document.getElementById('answer').innerText = userData.trueAnswer;
 }
 
@@ -93,22 +101,24 @@ function upDateTime(time, idx = null) {
 
             if (count <= 0) {
                 clearInterval(int);
+                socket.send(JSON.stringify({method: 'start'}));
             }
             count--;
         }, 1000)
     } else {
-        let count = time;
+        let count1 = time;
         const int = setInterval(() => {
+            document.getElementById('time').innerText = count1;
 
-            if (count <= 0) {
+            if (count1 <= 0) {
                 document.getElementById('quiz').innerHTML = `Время кончилось(`;
                 clearInterval(int);
+                socket.send(JSON.stringify({data: '', method: 'newQuest'}));
             }
-            count--;
+            count1--;
         }, 1000)
 
     }
-
 }
 
 function messageUser(mess) {
