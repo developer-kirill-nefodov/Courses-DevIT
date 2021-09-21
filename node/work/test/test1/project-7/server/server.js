@@ -30,7 +30,6 @@ wss.on('connection', (ws) => {
 
                             messageCli(methods('messageUser', [],
                                 `Пользователь ${key.username} дал правильный ответ!!!`));
-
                         }
                     }
 
@@ -121,18 +120,18 @@ function newQuest() {
             messageCli(methods('messageUser', [],
                 'Новый вопрос через 5 секунд... приготовьтесь'));
 
-            messageCli(methods('time', [], 5 + complexity));
+            messageCli(methods('time', [], 5));
 
             setTimeout(() => {
                 messageCli(methods('messageUser', [],
                     'Только один из вас может победит'));
 
                 messageCli(methods('question', [], quest));
-                messageCli(methods('time', [], 30 + complexity));
+                messageCli(methods('time', [], complexity));
 
                 timing = setTimeout(() => {
                     newQuest();
-                }, 30000 + complexity * 1000);
+                }, complexity * 1000);
             }, 6000)
         }
     }

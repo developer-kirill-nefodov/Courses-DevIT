@@ -25,7 +25,6 @@
     display: grid;
     margin: 20px;
     width: 40%;
-    background: red;
     justify-items: center;
 }
 
@@ -47,7 +46,6 @@
     margin: 20px;
     width: 300px;
     height: auto;
-    background: black;
     justify-items: center;
 }
 
