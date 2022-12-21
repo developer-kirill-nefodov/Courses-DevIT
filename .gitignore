@@ -1,5 +1,4 @@
 .idea
 
-node/work/test/test1/project-6/node_modules
-node/work/test/test1/project-7/node_modules
-node/homeWork/21.09.21/test/node_modules
+*node_modules
+*package-lock.json
