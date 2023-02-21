@@ -3,9 +3,9 @@
 
 Git clone project
 ```
-git clone git@github.com:developer-kirill-nefodov/credit-closer.git
+git clone git@github.com:developer-kirill-nefodov/Courses-DevIT.git
 
-cd ./credit_admin_app/
+cd ./Courses-DevIT/
 ```
 
 ## Description
