@@ -7,7 +7,7 @@ function unpackingArr(arr) {
       .reduce((e, n) => e + n, 0))
 }
 
-console.log(unpackingArr(arr))
+// console.log(unpackingArr(arr))
 
 /** Test-2 **/
 const arr1 = [2, 4, 5, 32, 6, 1, 0, 7]
@@ -25,7 +25,7 @@ const arr2 = [
 ]
 
 function deployedArr(arr) {
-  return [...arr].map(data => data.reverse()).reverse()
+  return arr.map(data => data.reverse()).reverse()
 }
 
 // console.log(deployedArr(arr2))

@@ -24,4 +24,4 @@ function factorialNum(x, y) {
   return b(a)
 }
 
-console.log(factorialNum(1, 4)) //120
+// console.log(factorialNum(1, 4)) //120

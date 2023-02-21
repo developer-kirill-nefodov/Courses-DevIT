@@ -1,13 +1,18 @@
 /** Test-1 **/
 const Count = () => {
-  const a = 1, b = 1;
+  let a = 1, b = 1;
 
   return s => {
-    if (s === 'int') return `1: a: ${a++}, b: ${b++}`
-    if (s === 'des') return `2: a: ${--a}, b: ${b++}`
-    if (s === 'up') return `2: a: ${a = 0}, b: ${b++}`
-
-    return `b: ${b}`
+    switch (s) {
+      case 'int':
+        return `1: a: ${a++}, b: ${b++}`;
+      case 'des':
+        return `2: a: ${--a}, b: ${b++}`;
+      case 'up':
+        return `2: a: ${a = 0}, b: ${b++}`;
+      default:
+        return `b: ${b}`
+    }
   }
 }
 
@@ -21,19 +26,15 @@ const c = Count()
 /** Test-2 **/
 
 function fib(n) {
-  let a = 0, b = 1, sum;
+  let fib = Math.floor(n) > 3 ? n : 4;
 
   return function () {
-    for (let i = 2; i <= n; i++) {
-      a = (n - 1);
-      b = (n - 2);
-      sum = a + b
-    }
-    return sum
+    fib = (fib - 1) + (fib - 2);
+    return fib;
   }
 }
 
-let result = fib(7) //11
+let result = fib(3.1) //11
 
 // console.log(result())
 
